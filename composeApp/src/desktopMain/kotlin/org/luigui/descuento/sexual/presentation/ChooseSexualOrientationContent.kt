@@ -23,7 +23,9 @@ fun ChooseSexualOrientationContent(
 ) {
     MaterialTheme{
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -41,8 +43,7 @@ fun ChooseSexualOrientationContent(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(

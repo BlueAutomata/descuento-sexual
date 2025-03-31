@@ -26,7 +26,9 @@ fun ChooseWaitTimeLikelihoodScreenContent(
             modifier = Modifier.fillMaxSize(),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -41,8 +43,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(

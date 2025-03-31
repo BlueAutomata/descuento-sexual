@@ -23,7 +23,9 @@ fun HomeScreenContent(
 ) {
     MaterialTheme{
         Box(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),

@@ -22,7 +22,9 @@ import kotlin.system.exitProcess
 fun EndScreenContent() {
     MaterialTheme{
         Box(
-            modifier = Modifier.fillMaxSize(), // Use fillMaxSize to cover the entire screen
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp), // Use fillMaxSize to cover the entire screen
             contentAlignment = Alignment.Center // Center the content
         ) {
             Column(
