@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
-fun HomeScreenContent(
+fun ChoosePhotoScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
@@ -31,7 +31,7 @@ fun HomeScreenContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "¡Bienvenido!",
+                    text = "Seleccione la persona con la que más desearía tener relaciones sexuales.",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 

@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
-fun HomeScreenContent(
+fun ChooseWaitTimeLikelihoodScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
@@ -31,7 +31,7 @@ fun HomeScreenContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "¡Bienvenido!",
+                    text = "¿Cuál es la probabilidad de que espere 1 hora para tener sexo con protección?.",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
