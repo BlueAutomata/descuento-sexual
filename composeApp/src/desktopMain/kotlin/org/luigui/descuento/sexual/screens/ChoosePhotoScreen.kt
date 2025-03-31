@@ -3,20 +3,21 @@ package org.luigui.descuento.sexual.screens
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import org.luigui.descuento.sexual.presentation.HomeScreenContent
+import org.luigui.descuento.sexual.presentation.ChoosePhotoScreenContent
+import org.luigui.descuento.sexual.presentation.ChooseSexualOrientationContent
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
-class HomeScreen(
+class ChoosePhotoScreen(
     private val viewModel: SexualDiscountViewModel
 ): Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.current
 
-        HomeScreenContent(
+        ChoosePhotoScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(RegisterParticipantScreen(viewModel))
+                navigator?.push(ChooseWaitTimeLikelihoodScreen(viewModel))
             }
         )
     }

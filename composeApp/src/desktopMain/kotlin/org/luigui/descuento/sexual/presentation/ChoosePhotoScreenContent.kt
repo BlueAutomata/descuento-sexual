@@ -17,24 +17,25 @@ import androidx.compose.ui.unit.dp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
-fun HomeScreenContent(
+fun ChoosePhotoScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
     MaterialTheme{
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            modifier = Modifier.fillMaxSize(),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "¡Bienvenido!",
+                    text = "Seleccione la persona con la que más desearía tener relaciones sexuales.",
                     style = MaterialTheme.typography.headlineLarge,
+
                 )
 
                 Spacer(
@@ -43,8 +44,7 @@ fun HomeScreenContent(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(

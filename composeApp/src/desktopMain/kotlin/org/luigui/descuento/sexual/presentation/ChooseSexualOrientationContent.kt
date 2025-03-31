@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
-fun HomeScreenContent(
+fun ChooseSexualOrientationContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
@@ -33,7 +33,7 @@ fun HomeScreenContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "¡Bienvenido!",
+                    text = "Seleccione su orientación sexual",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
@@ -43,8 +43,7 @@ fun HomeScreenContent(
 
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                        .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(
