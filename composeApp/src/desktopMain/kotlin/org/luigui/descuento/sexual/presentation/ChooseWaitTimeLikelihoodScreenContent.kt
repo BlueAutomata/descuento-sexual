@@ -55,7 +55,6 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                 modifier = Modifier.weight(1f)
             )
 
-            // Display the specified image
             Box(
                 modifier = Modifier
                     .height(400.dp)
@@ -103,7 +102,6 @@ fun ChooseWaitTimeLikelihoodScreenContent(
             Spacer(modifier = Modifier.weight(1f))
 
             if (rating != 5) {
-                // Next Button
                 Button(
                     onClick = {
                         //viewModel.setWaitTimeLikelihood(rating)

@@ -53,8 +53,8 @@ fun ChoosePhotoScreenContent(
 
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth().height(100.dp)
+                        .weight(1f).fillMaxSize(0.6f)
+                        //.fillMaxWidth(0.5f).height(100.dp)
                 ) {
                     RendererPhotos(viewModel = viewModel)
                 }
