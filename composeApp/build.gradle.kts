@@ -45,7 +45,6 @@ kotlin {
     }
 }
 
-
 compose.desktop {
     application {
         mainClass = "org.luigui.descuento.sexual.MainKt"
