@@ -31,7 +31,7 @@ fun ChooseSexualOrientationContent(
     onNavigateToNextScreen: () -> Unit
 ) {
     var selectedIndex by remember { mutableIntStateOf(-1) }
-    val options = listOf("Tengo sexo con mujeres.", "Tengo sexo con hombres.")
+    val options = listOf("Tengo sexo con hombres.", "Tengo sexo con mujeres.")
 
     MaterialTheme{
         Box(
@@ -85,17 +85,21 @@ fun ChooseSexualOrientationContent(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    Button(
-                        onClick = onNavigateToNextScreen
-                    ) {
-                        Text(
-                            text = "Siguiente",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                    if (selectedIndex >= 0) {
+                        Button(
+                            onClick = {
+                                onNavigateToNextScreen()
+                                viewModel.setSexualOrientation(selectedIndex)
+                            }
+                        ) {
+                            Text(
+                                text = "Siguiente",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                 }
             }
-
         }
     }
 }
