@@ -19,6 +19,9 @@ class SexualDiscountViewModel: ViewModel() {
     private val userHome: String = System.getProperty("user.home")
     private val storageFile = File(userHome, "user_selected_folder.txt")
 
+    private val _nameAndCode = MutableStateFlow("")
+    val nameAndCode: StateFlow<String> = _nameAndCode
+
     init {
         // Load the last selected folder path when the ViewModel is created
         loadSelectedFolderPath()
@@ -72,5 +75,19 @@ class SexualDiscountViewModel: ViewModel() {
             1 -> _sexualOrientation.value = SexualOrientation.LESBIAN
             else -> _sexualOrientation.value = null
         }
+    }
+
+    fun updateAndCode(newName: String) {
+        _nameAndCode.value = newName
+    }
+
+    fun doesFolderExist(): Boolean {
+        val sanitizedCompleteName = _nameAndCode.value.trim().replace(" ", "_") ?: ""
+
+        // Construct the folder name correctly
+        val folderName = listOf(sanitizedCompleteName).filter { it.isNotEmpty() }.joinToString("_")
+
+        val folderPath = "$selectedFolderPath${File.separator}${folderName}"
+        return File(folderPath).exists()
     }
 }

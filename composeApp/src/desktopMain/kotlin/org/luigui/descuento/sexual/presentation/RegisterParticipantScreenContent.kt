@@ -8,12 +8,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
@@ -21,6 +30,14 @@ fun RegisterParticipantScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
+    val nameAndCode by viewModel.nameAndCode.collectAsState()
+
+    // Check if the form is valid
+    val isFormValid = nameAndCode.isNotBlank()
+
+    // State to show a message if the folder already exists
+    var showFolderExistsMessage by remember { mutableStateOf(false) }
+
     MaterialTheme{
         Box(
             modifier = Modifier
@@ -41,6 +58,31 @@ fun RegisterParticipantScreenContent(
                     modifier = Modifier.weight(1f)
                 )
 
+                // Full name field
+                TextField(
+                    value = nameAndCode,
+                    onValueChange = { newText -> viewModel.updateAndCode(newText) },
+                    label = {
+                        Text(
+                            text = "Nombre Completo",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp) // Increased font size
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(vertical = 8.dp)
+                        .fillMaxWidth(),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 18.sp) // Increased font size for input text
+                )
+
+                // Show a message if the folder already exists
+                if (showFolderExistsMessage) {
+                    Text(
+                        text = "Ya existe una carpeta para este usuario.",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp, color = Color.Red),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -48,7 +90,14 @@ fun RegisterParticipantScreenContent(
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(
-                        onClick = onNavigateToNextScreen
+                        onClick = {
+                            if (viewModel.doesFolderExist()) {
+                                showFolderExistsMessage = true
+                            } else {
+                                onNavigateToNextScreen()
+                            }
+                        },
+                        enabled = isFormValid
                     ) {
                         Text(
                             text = "Siguiente",
