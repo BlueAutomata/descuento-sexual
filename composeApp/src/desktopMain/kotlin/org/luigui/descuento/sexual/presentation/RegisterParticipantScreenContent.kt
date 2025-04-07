@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
@@ -50,12 +51,18 @@ fun RegisterParticipantScreenContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
+                    modifier = Modifier.padding(16.dp),
                     text = "Registrar Participante",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
-                Spacer(
-                    modifier = Modifier.weight(1f)
+                Text(
+                    text = "Iniciales del primer nombre, primer y segundo apellido; seguido de los 3 últimos dígitos del documento de identidad. Ej: Ana Pérez Gil – APG037",
+                    modifier = Modifier
+                        .fillMaxWidth(0.75f)
+                        .padding(16.dp),
+                    style = MaterialTheme.typography.headlineSmall,
+                    textAlign = TextAlign.Start
                 )
 
                 // Full name field
@@ -64,14 +71,33 @@ fun RegisterParticipantScreenContent(
                     onValueChange = { newText -> viewModel.updateAndCode(newText) },
                     label = {
                         Text(
-                            text = "Nombre Completo",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp) // Increased font size
+                            text = "Iniciales + 3 últimos dígitos.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                        )
+                    },
+                    placeholder = {
+                        Text(
+                            text = "APG037",
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp, color = Color.Gray)
                         )
                     },
                     modifier = Modifier
                         .padding(vertical = 8.dp)
-                        .fillMaxWidth(),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 18.sp) // Increased font size for input text
+                        .fillMaxWidth(0.75f),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+                )
+
+                Text(
+                    text = "Iniciales del primer nombre, primer y segundo apellido; seguido de los 3 últimos dígitos del documento de identidad. Ej: Ana Pérez Gil – APG037.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray,
+                    modifier = Modifier
+                        .fillMaxWidth(0.75f)
+                        .padding(start = 4.dp, top = 2.dp)
+                )
+
+                Spacer(
+                    modifier = Modifier.weight(1f)
                 )
 
                 // Show a message if the folder already exists

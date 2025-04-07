@@ -54,7 +54,7 @@ fun ChooseSexualOrientationContent(
                 )
 
                 SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(0.75f)
                 ) {
                     options.forEachIndexed { index, label ->
                         SegmentedButton(
