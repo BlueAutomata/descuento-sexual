@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -21,19 +20,27 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import org.jetbrains.skia.PathEffect
+import org.luigui.descuento.sexual.data.SexualOrientation
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import java.io.File
+import kotlin.math.ceil
 
 @Composable
 fun ChoosePhotoScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
+    val selectPhotoPhase by viewModel.selectPhotoPhase.collectAsState()
+    val photoPlaceholders by viewModel.photoPlaceholders.collectAsState()
+
     MaterialTheme {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -56,7 +63,7 @@ fun ChoosePhotoScreenContent(
                         .weight(1f).fillMaxSize(0.6f)
                         //.fillMaxWidth(0.5f).height(100.dp)
                 ) {
-                    RendererPhotos(viewModel = viewModel)
+                    RendererPhotos(viewModel = viewModel, photoPlaceholders = photoPlaceholders)
                 }
 
                 Box(
@@ -64,7 +71,15 @@ fun ChoosePhotoScreenContent(
                     contentAlignment = Alignment.BottomEnd
                 ) {
                     Button(
-                        onClick = onNavigateToNextScreen
+                        onClick = {
+                            if (selectPhotoPhase > 4) {
+                                onNavigateToNextScreen()
+                            }
+                            else {
+                                viewModel.getRandomPlaceholders()
+                                viewModel.updatePhotoPhase()
+                            }
+                        }
                     ) {
                         Text(text = "Siguiente", style = MaterialTheme.typography.bodyLarge)
                     }
@@ -75,8 +90,23 @@ fun ChoosePhotoScreenContent(
 }
 
 @Composable
-fun RendererPhotos(viewModel: SexualDiscountViewModel) {
-    val photos = remember { (1..30).map { "placeholder_man_$it" } }
+fun RendererPhotos(viewModel: SexualDiscountViewModel, photoPlaceholders: List<String>) {
+    // val photos = remember { (1..30).map { "placeholder_man_$it" } }
+
+    // Get all available photos based on orientation
+    val photos = remember(viewModel.sexualOrientation.value) {
+        if (viewModel.sexualOrientation.value == SexualOrientation.HETEROSEXUAL) {
+            (1..30).map { "man_$it" } // Male placeholders
+        } else {
+            (1..30).map { "woman_$it" } // Female placeholders
+        }
+    }
+
+    // Calculate how many times we need to repeat the list to fill the grid (6x5 = 30 items)
+    val repeatedPhotos = remember(photos) {
+        val repeatCount = ceil(30f / photos.size).toInt()
+        List(repeatCount) { photos }.flatten().take(30)
+    }
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(6),
@@ -86,9 +116,10 @@ fun RendererPhotos(viewModel: SexualDiscountViewModel) {
     ) {
         items(photos.size) { index ->
             PhotoItem(
-                photoName = photos[index],
+                photoName = repeatedPhotos[index],
                 viewModel = viewModel,
-                modifier = Modifier.aspectRatio(1f)
+                modifier = Modifier.aspectRatio(1f),
+                photoPlaceholder = photoPlaceholders[index % photoPlaceholders.size]
             )
         }
     }
@@ -98,22 +129,11 @@ fun RendererPhotos(viewModel: SexualDiscountViewModel) {
 fun PhotoItem(
     photoName: String,
     viewModel: SexualDiscountViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    photoPlaceholder: String
 ) {
-    val randomPlaceholder = remember {
-        val placeholder = getRandomPlaceholder()
-        debugResourcePath(placeholder)
-        placeholder
-    }
-
-    //val randomPlaceholder = remember { getRandomPlaceholder() }
-    val imagePath = try {
-        print("test")
-        randomPlaceholder
-        //viewModel.getPhotoPath(photoName) ?: randomPlaceholder
-    } catch (e: Exception) {
-        print("test2")
-        randomPlaceholder
+    val imagePath = remember(photoName, photoPlaceholder) {
+        viewModel.getPhotoPath(photoName) ?: photoPlaceholder
     }
 
     Card(
@@ -127,42 +147,4 @@ fun PhotoItem(
             modifier = Modifier.fillMaxSize()
         )
     }
-}
-
-private fun getRandomPlaceholder(): String {
-    val placeholders = listOf(
-        "images/placeholder_man_1.png",
-        "images/placeholder_woman_1.png"
-        // Add more placeholders as needed
-    )
-    return placeholders.random()
-}
-
-
-private fun debugResourcePath(resourceName: String) {
-    println("\n=== Resource Debug ===")
-    println("Requested resource: $resourceName")
-
-    val classLoader = Thread.currentThread().contextClassLoader
-
-    // Check in regular resources
-    val resourceUrl = classLoader.getResource(resourceName)
-    println("Resource URL: ${resourceUrl?.toExternalForm() ?: "NOT FOUND"}")
-
-    // Check in compose resources
-    val composeResourceUrl = classLoader.getResource("compose-resources/$resourceName")
-    println("Compose Resource URL: ${composeResourceUrl?.toExternalForm() ?: "NOT FOUND"}")
-
-    // Check filesystem paths
-    val projectDirs = listOf(
-        "src/commonMain/composeResources",
-        "src/desktopMain/resources",
-        "build/composeResources"
-    )
-
-    projectDirs.forEach { dir ->
-        val file = File("$dir/$resourceName")
-        println("Filesystem path: ${file.absolutePath} - Exists: ${file.exists()}")
-    }
-    println("===================\n")
 }
