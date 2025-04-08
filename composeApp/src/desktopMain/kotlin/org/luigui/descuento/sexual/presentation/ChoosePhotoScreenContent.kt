@@ -7,8 +7,10 @@ import androidx.compose.ui.res.painterResource
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,12 +27,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import org.jetbrains.skia.PathEffect
 import org.luigui.descuento.sexual.data.SexualOrientation
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
-import java.io.File
 import kotlin.math.ceil
 
 @Composable
@@ -52,18 +57,85 @@ fun ChoosePhotoScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
-                Text(
-                    text = "Seleccione la persona con la que más desearía tener relaciones sexuales.",
-                    style = MaterialTheme.typography.headlineLarge,
-                )
+                when (selectPhotoPhase) {
+                    1 -> {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = buildAnnotatedString {
+                                append("Seleccione la persona con la que ")
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Red
+                                )) {
+                                    append("más")
+                                }
+                                append(" desearía tener relaciones sexuales.")
+                            },
+                            style = MaterialTheme.typography.headlineLarge,
+                        )
+                    }
+                    2 -> {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = buildAnnotatedString {
+                                append("Seleccione la persona con la que ")
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Red
+                                )) {
+                                    append("menos")
+                                }
+                                append(" desearía tener relaciones sexuales.")
+                            },
+                            style = MaterialTheme.typography.headlineLarge,
+                        )
+                    }
+                    3 -> {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = buildAnnotatedString {
+                                append("Seleccione la persona que cree ")
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Red
+                                )) {
+                                    append("más problable")
+                                }
+                                append(" que tenga una ITS.")
+                            },
+                            style = MaterialTheme.typography.headlineLarge,
+                        )
+                    }
+                    4 -> {
+                        Text(
+                            modifier = Modifier.padding(16.dp),
+                            text = buildAnnotatedString {
+                                append("Seleccione la persona que cree ")
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.Red
+                                )) {
+                                    append("menos problable")
+                                }
+                                append(" que tenga una ITS")
+                            },
+                            style = MaterialTheme.typography.headlineLarge,
+                        )
+                    }
+                }
 
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f).fillMaxSize(0.6f)
-                        //.fillMaxWidth(0.5f).height(100.dp)
+                BoxWithConstraints(
+                    modifier = Modifier.fillMaxSize(0.6f).weight(1f)
                 ) {
-                    RendererPhotos(viewModel = viewModel, photoPlaceholders = photoPlaceholders)
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        RendererPhotos(
+                            viewModel = viewModel,
+                            photoPlaceholders = photoPlaceholders
+                        )
+                    }
                 }
 
                 Box(
@@ -72,7 +144,7 @@ fun ChoosePhotoScreenContent(
                 ) {
                     Button(
                         onClick = {
-                            if (selectPhotoPhase > 4) {
+                            if (selectPhotoPhase == 4) {
                                 onNavigateToNextScreen()
                             }
                             else {
@@ -110,7 +182,7 @@ fun RendererPhotos(viewModel: SexualDiscountViewModel, photoPlaceholders: List<S
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(6),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxHeight(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
