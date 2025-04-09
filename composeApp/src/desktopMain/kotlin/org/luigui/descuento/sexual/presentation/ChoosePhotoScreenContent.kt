@@ -1,6 +1,8 @@
 package org.luigui.descuento.sexual.presentation
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,16 +35,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.onPointerEvent
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import org.luigui.descuento.sexual.data.SexualBehavior
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import kotlin.math.ceil
@@ -220,6 +231,7 @@ fun RendererPhotos(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PhotoItem(
     photoName: String,
@@ -228,6 +240,15 @@ fun PhotoItem(
     photoPlaceholder: String,
     isSelected: Boolean
 ) {
+    // State to track hover
+    var isHovered by remember { mutableStateOf(false) }
+
+    // Animation for smooth scaling
+    val scale by animateFloatAsState(
+        targetValue = if (isHovered) 1.25f else 1f,
+        animationSpec = tween(durationMillis = 150)
+    )
+
     val imagePath = remember(photoName, photoPlaceholder) {
         viewModel.getPhotoPath(photoName) ?: photoPlaceholder
     }
@@ -237,14 +258,28 @@ fun PhotoItem(
     val borderWidth = if (isSelected) 4.dp else 0.dp
     val overlayColor = if (isSelected) Color.Blue.copy(alpha = 0.3f) else Color.Transparent
 
+    // Combined hover and selection elevation
+    val elevation = when {
+        isSelected && isHovered -> 12.dp
+        isSelected -> 8.dp
+        isHovered -> 6.dp
+        else -> 2.dp
+    }
+
     Card(
         modifier = modifier
+            .aspectRatio(1f)
             .clickable { viewModel.setSelectedPhoto(photoName) }
             .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
-            .animateContentSize(),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) 8.dp else 2.dp
-        )
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }
+            .pointerHoverIcon(PointerIcon.Hand) // Changes cursor to hand
+            .onPointerEvent(PointerEventType.Enter) { isHovered = true }
+            .onPointerEvent(PointerEventType.Exit) { isHovered = false }
+            .zIndex(if (isHovered) 1f else 0f), // Bring hovered item to front
+        elevation = CardDefaults.cardElevation(elevation)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
@@ -268,6 +303,15 @@ fun PhotoItem(
                         .padding(4.dp)
                         .size(24.dp),
                     tint = Color.White
+                )
+            }
+
+            // Optional: Add subtle shadow when hovered
+            if (isHovered && !isSelected) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.05f))
                 )
             }
         }
