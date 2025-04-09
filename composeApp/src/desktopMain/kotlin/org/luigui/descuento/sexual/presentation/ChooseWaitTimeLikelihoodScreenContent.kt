@@ -119,6 +119,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                         else {
                             viewModel.updateWaitingTimePhase()
                         }
+                        rating = 5
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {

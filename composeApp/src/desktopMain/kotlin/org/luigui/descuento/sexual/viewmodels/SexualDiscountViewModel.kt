@@ -232,14 +232,9 @@ class SexualDiscountViewModel: ViewModel() {
         }
     }
 
-    // Clear all selections when needed
     fun clearAllSelections() {
         _phaseSelections.keys.forEach { _phaseSelections[it] = "" }
     }
-
-    // Remove duplicate photo state variables
-    // Remove individual isXxxPhotoSelected functions
-    // Keep only the unified selection system abov
 
     fun debugResourcePath(resourceName: String) {
         println("\n=== Resource Debug ===")
