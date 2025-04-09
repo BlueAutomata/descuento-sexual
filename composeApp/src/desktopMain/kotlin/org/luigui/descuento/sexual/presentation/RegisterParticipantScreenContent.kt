@@ -87,15 +87,6 @@ fun RegisterParticipantScreenContent(
                     textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
                 )
 
-                Text(
-                    text = "Iniciales del primer nombre, primer y segundo apellido; seguido de los 3 últimos dígitos del documento de identidad. Ej: Ana Pérez Gil – APG037.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.Gray,
-                    modifier = Modifier
-                        .fillMaxWidth(0.75f)
-                        .padding(start = 4.dp, top = 2.dp)
-                )
-
                 Spacer(
                     modifier = Modifier.weight(1f)
                 )

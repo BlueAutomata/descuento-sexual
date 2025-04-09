@@ -45,7 +45,7 @@ fun ChooseSexualOrientationContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Seleccione su orientación sexual",
+                    text = "Seleccione su comportamiento sexual",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
