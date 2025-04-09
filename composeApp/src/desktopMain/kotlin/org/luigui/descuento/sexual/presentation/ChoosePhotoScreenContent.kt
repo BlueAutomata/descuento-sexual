@@ -1,6 +1,9 @@
 package org.luigui.descuento.sexual.presentation
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.painterResource
@@ -14,15 +17,21 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -162,19 +171,22 @@ fun ChoosePhotoScreenContent(
 }
 
 @Composable
-fun RendererPhotos(viewModel: SexualDiscountViewModel, photoPlaceholders: List<String>) {
-    // val photos = remember { (1..30).map { "placeholder_man_$it" } }
+fun RendererPhotos(
+    viewModel: SexualDiscountViewModel,
+    photoPlaceholders: List<String>
+) {
+    val currentPhase by viewModel.selectPhotoPhase.collectAsState()
 
-    // Get all available photos based on orientation
+    // Get photos based on orientation
     val photos = remember(viewModel.sexualBehavior.value) {
         if (viewModel.sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
-            (1..30).map { "man_$it" } // Male placeholders
+            (1..30).map { "man_$it" }
         } else {
-            (1..30).map { "woman_$it" } // Female placeholders
+            (1..30).map { "woman_$it" }
         }
     }
 
-    // Calculate how many times we need to repeat the list to fill the grid (6x5 = 30 items)
+    // Repeat photos to fill grid
     val repeatedPhotos = remember(photos) {
         val repeatCount = ceil(30f / photos.size).toInt()
         List(repeatCount) { photos }.flatten().take(30)
@@ -186,12 +198,19 @@ fun RendererPhotos(viewModel: SexualDiscountViewModel, photoPlaceholders: List<S
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(photos.size) { index ->
+        items(repeatedPhotos.size) { index ->
+            val photoName = repeatedPhotos[index]
+            // Key fix: Include currentPhase in the remember/derivedStateOf
+            val isSelected by remember(photoName, currentPhase) {
+                derivedStateOf { viewModel.isPhotoSelected(photoName) }
+            }
+
             PhotoItem(
-                photoName = repeatedPhotos[index],
+                photoName = photoName,
                 viewModel = viewModel,
                 modifier = Modifier.aspectRatio(1f),
-                photoPlaceholder = photoPlaceholders[index % photoPlaceholders.size]
+                photoPlaceholder = photoPlaceholders[index % photoPlaceholders.size],
+                isSelected = isSelected
             )
         }
     }
@@ -202,21 +221,51 @@ fun PhotoItem(
     photoName: String,
     viewModel: SexualDiscountViewModel,
     modifier: Modifier = Modifier,
-    photoPlaceholder: String
+    photoPlaceholder: String,
+    isSelected: Boolean
 ) {
     val imagePath = remember(photoName, photoPlaceholder) {
         viewModel.getPhotoPath(photoName) ?: photoPlaceholder
     }
 
+    // Enhanced selection styling
+    val borderColor = if (isSelected) Color.Blue else Color.Transparent
+    val borderWidth = if (isSelected) 4.dp else 0.dp
+    val overlayColor = if (isSelected) Color.Blue.copy(alpha = 0.3f) else Color.Transparent
+
     Card(
-        modifier = modifier.clickable { /* Handle photo selection */ },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Image(
-            painter = painterResource(imagePath),
-            contentDescription = "Photo $photoName",
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize()
+        modifier = modifier
+            .clickable { viewModel.setSelectedPhoto(photoName) }
+            .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
+            .animateContentSize(),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 8.dp else 2.dp
         )
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(imagePath),
+                contentDescription = "Photo $photoName",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            if (isSelected) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(overlayColor)
+                )
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "Selected",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp)
+                        .size(24.dp),
+                    tint = Color.White
+                )
+            }
+        }
     }
 }

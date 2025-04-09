@@ -1,6 +1,7 @@
 package org.luigui.descuento.sexual.viewmodels
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -22,8 +23,8 @@ class SexualDiscountViewModel: ViewModel() {
     private val _nameAndCode = MutableStateFlow("")
     val nameAndCode: StateFlow<String> = _nameAndCode
 
-    private val _selectPhotoPhase = MutableStateFlow(1)
-    val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
+    // private val _selectPhotoPhase = MutableStateFlow(1)
+    //val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
 
     private val _photoPlaceholders = MutableStateFlow<List<String>>(emptyList())
     val photoPlaceholders: StateFlow<List<String>> = _photoPlaceholders
@@ -39,6 +40,9 @@ class SexualDiscountViewModel: ViewModel() {
 
     private val _lowSTDRiskPhoto = MutableStateFlow("")
     val lowSTDRiskPhoto: StateFlow<String> = _lowSTDRiskPhoto
+
+    private val _selectedPhoto = MutableStateFlow<String?>(null)
+    val selectedPhoto: StateFlow<String?> = _selectedPhoto
 
     init {
         loadSelectedFolderPath()
@@ -86,9 +90,9 @@ class SexualDiscountViewModel: ViewModel() {
         return if (resourceExists(potentialPath)) potentialPath else null
     }
 
-    fun updatePhotoPhase() {
-        _selectPhotoPhase.value += 1
-    }
+    // fun updatePhotoPhase() {
+    //    _selectPhotoPhase.value += 1
+    //}
 
     fun setSexualOrientation(index: Int) {
         when (index) {
@@ -142,6 +146,55 @@ class SexualDiscountViewModel: ViewModel() {
     fun setLowSTDRiskPhotoReference(ref: String) {
         _lowSTDRiskPhoto.value = ref
     }
+
+    fun isAttractivePhotoSelected(photoName: String): Boolean {
+        return _attractivePhotoReference.value == photoName
+    }
+
+    fun isUnattractivePhotoSelected(photoName: String): Boolean {
+        return _unattractivePhotoReference.value == photoName
+    }
+
+    fun isHighSTDRiskPhotoSelected(photoName: String): Boolean {
+        return _highSTDRiskPhoto.value == photoName
+    }
+
+    fun isLowSTDRiskPhotoSelected(photoName: String): Boolean {
+        return _lowSTDRiskPhoto.value == photoName
+    }
+
+    /// Current phase (1-4)
+    private val _selectPhotoPhase = MutableStateFlow(1)
+    val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
+
+    // Store selections for each phase separately
+    private val _phaseSelections = mutableStateMapOf<Int, String>(
+        1 to "", // Attractive
+        2 to "", // Unattractive
+        3 to "", // High STD risk
+        4 to ""  // Low STD risk
+    )
+
+    fun setSelectedPhoto(photoName: String) {
+        _phaseSelections[_selectPhotoPhase.value] = photoName
+    }
+
+    fun isPhotoSelected(photoName: String): Boolean {
+        return _phaseSelections[_selectPhotoPhase.value] == photoName
+    }
+
+    fun updatePhotoPhase() {
+        _selectPhotoPhase.value += 1
+    }
+
+    // Clear all selections when needed
+    fun clearAllSelections() {
+        _phaseSelections.keys.forEach { _phaseSelections[it] = "" }
+    }
+
+    // Remove duplicate photo state variables
+    // Remove individual isXxxPhotoSelected functions
+    // Keep only the unified selection system abov
 
     fun debugResourcePath(resourceName: String) {
         println("\n=== Resource Debug ===")
