@@ -107,7 +107,9 @@ fun ChooseWaitTimeLikelihoodScreenContent(
             if (rating != 5) {
                 Button(
                     onClick = {
-                        //viewModel.setWaitTimeLikelihood(rating)
+                        viewModel.setRating(rating)
+                        viewModel.saveMeasurement()
+
                         if (selectWaitingTimeProbabilityPhase == 7 &&
                             selectedPhotoWaitTimePhase == 4) {
                             onNavigateToNextScreen()
