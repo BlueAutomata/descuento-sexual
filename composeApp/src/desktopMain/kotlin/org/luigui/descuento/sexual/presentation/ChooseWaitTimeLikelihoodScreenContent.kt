@@ -64,7 +64,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 Image(
-                    painter = painterResource("images/placeholder_woman_1.png"),
+                    painter = painterResource(viewModel.getPhasePhoto()),
                     contentDescription = "Illustration",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()

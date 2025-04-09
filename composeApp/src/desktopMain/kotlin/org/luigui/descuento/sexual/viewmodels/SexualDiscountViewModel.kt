@@ -115,10 +115,6 @@ class SexualDiscountViewModel: ViewModel() {
         return if (resourceExists(potentialPath)) potentialPath else null
     }
 
-    // fun updatePhotoPhase() {
-    //    _selectPhotoPhase.value += 1
-    //}
-
     fun setSexualBehavior(index: Int) {
         when (index) {
             0 -> _sexualBehavior.value = SexualBehavior.HETEROSEXUAL
@@ -147,12 +143,16 @@ class SexualDiscountViewModel: ViewModel() {
             listOf(
                 "images/placeholder_man_1.png",
                 "images/placeholder_man_2.png",
-            ).shuffled().take(2) // Get 4 random male placeholders
+                "images/placeholder_man_3.png",
+                "images/placeholder_man_4.png",
+            ).shuffled().take(4) // Get 4 random male placeholders
         } else {
             listOf(
                 "images/placeholder_woman_1.png",
                 "images/placeholder_woman_2.png",
-            ).shuffled().take(2) // Get 4 random female placeholders
+                "images/placeholder_woman_3.png",
+                "images/placeholder_woman_4.png",
+            ).shuffled().take(4) // Get 4 random female placeholders
         }
     }
 
@@ -222,9 +222,14 @@ class SexualDiscountViewModel: ViewModel() {
         _selectWaitingTimeProbabilityPhase.value = 1
     }
 
-    fun getPhasePhoto() {
+    fun getPhasePhoto(): String {
         val photoName = _phaseSelections[selectedPhotoWaitTimePhase.value]
         val placeholderName = _phasePlaceholderSelections[selectedPhotoWaitTimePhase.value]
+        return if (getPhotoPath(photoName!!) != null) {
+            photoName
+        } else {
+            placeholderName!!
+        }
     }
 
     // Clear all selections when needed
