@@ -160,9 +160,14 @@ fun ChoosePhotoScreenContent(
                                 viewModel.getRandomPlaceholders()
                                 viewModel.updatePhotoPhase()
                             }
-                        }
+                        },
+                        enabled = viewModel.isPhotoSelected()
                     ) {
-                        Text(text = "Siguiente", style = MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = "Siguiente",
+                            style = MaterialTheme.typography.bodyLarge,
+
+                        )
                     }
                 }
             }
@@ -200,7 +205,6 @@ fun RendererPhotos(
     ) {
         items(repeatedPhotos.size) { index ->
             val photoName = repeatedPhotos[index]
-            // Key fix: Include currentPhase in the remember/derivedStateOf
             val isSelected by remember(photoName, currentPhase) {
                 derivedStateOf { viewModel.isPhotoSelected(photoName) }
             }

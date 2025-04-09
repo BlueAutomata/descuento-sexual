@@ -183,6 +183,11 @@ class SexualDiscountViewModel: ViewModel() {
         return _phaseSelections[_selectPhotoPhase.value] == photoName
     }
 
+    fun isPhotoSelected(): Boolean {
+        return _phaseSelections[_selectPhotoPhase.value] != ""
+    }
+
+
     fun updatePhotoPhase() {
         _selectPhotoPhase.value += 1
     }
