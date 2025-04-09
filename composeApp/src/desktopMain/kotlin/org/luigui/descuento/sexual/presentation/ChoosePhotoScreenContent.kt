@@ -34,7 +34,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import org.luigui.descuento.sexual.data.SexualOrientation
+import org.luigui.descuento.sexual.data.SexualBehavior
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import kotlin.math.ceil
 
@@ -166,8 +166,8 @@ fun RendererPhotos(viewModel: SexualDiscountViewModel, photoPlaceholders: List<S
     // val photos = remember { (1..30).map { "placeholder_man_$it" } }
 
     // Get all available photos based on orientation
-    val photos = remember(viewModel.sexualOrientation.value) {
-        if (viewModel.sexualOrientation.value == SexualOrientation.HETEROSEXUAL) {
+    val photos = remember(viewModel.sexualBehavior.value) {
+        if (viewModel.sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
             (1..30).map { "man_$it" } // Male placeholders
         } else {
             (1..30).map { "woman_$it" } // Female placeholders

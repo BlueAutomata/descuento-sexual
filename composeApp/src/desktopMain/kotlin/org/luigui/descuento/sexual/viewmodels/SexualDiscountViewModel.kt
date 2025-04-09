@@ -6,12 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import org.luigui.descuento.sexual.data.SexualOrientation
+import org.luigui.descuento.sexual.data.SexualBehavior
 import java.io.File
 
 class SexualDiscountViewModel: ViewModel() {
-    private val _sexualOrientation = MutableStateFlow<SexualOrientation?>(null)
-    val sexualOrientation: StateFlow<SexualOrientation?> = _sexualOrientation
+    private val _sexualBehavior = MutableStateFlow<SexualBehavior?>(null)
+    val sexualBehavior: StateFlow<SexualBehavior?> = _sexualBehavior
 
     private var _selectedFolderPath by mutableStateOf<String?>(getDefaultFolderPath())
     val selectedFolderPath: String? get() = _selectedFolderPath
@@ -28,6 +28,17 @@ class SexualDiscountViewModel: ViewModel() {
     private val _photoPlaceholders = MutableStateFlow<List<String>>(emptyList())
     val photoPlaceholders: StateFlow<List<String>> = _photoPlaceholders
 
+    private val _attractivePhotoReference = MutableStateFlow("")
+    val attractivePhotoReference: StateFlow<String> = _attractivePhotoReference
+
+    private val _unattractivePhotoReference = MutableStateFlow("")
+    val unattractivePhotoReference: StateFlow<String> = _unattractivePhotoReference
+
+    private val _highSTDRiskPhoto = MutableStateFlow("")
+    val highSTDRiskPhoto: StateFlow<String> = _highSTDRiskPhoto
+
+    private val _lowSTDRiskPhoto = MutableStateFlow("")
+    val lowSTDRiskPhoto: StateFlow<String> = _lowSTDRiskPhoto
 
     init {
         loadSelectedFolderPath()
@@ -81,11 +92,11 @@ class SexualDiscountViewModel: ViewModel() {
 
     fun setSexualOrientation(index: Int) {
         when (index) {
-            0 -> _sexualOrientation.value = SexualOrientation.HETEROSEXUAL
-            1 -> _sexualOrientation.value = SexualOrientation.LESBIAN
-            else -> _sexualOrientation.value = null
+            0 -> _sexualBehavior.value = SexualBehavior.HETEROSEXUAL
+            1 -> _sexualBehavior.value = SexualBehavior.WSW
+            else -> _sexualBehavior.value = null
         }
-        print(_sexualOrientation.value)
+        print(_sexualBehavior.value)
     }
 
     fun updateAndCode(newName: String) {
@@ -103,7 +114,7 @@ class SexualDiscountViewModel: ViewModel() {
     }
 
     fun getRandomPlaceholders() {
-        _photoPlaceholders.value = if (_sexualOrientation.value == SexualOrientation.HETEROSEXUAL) {
+        _photoPlaceholders.value = if (_sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
             listOf(
                 "images/placeholder_man_1.png",
                 "images/placeholder_man_2.png",
@@ -116,6 +127,21 @@ class SexualDiscountViewModel: ViewModel() {
         }
     }
 
+    fun setAttractivePhotoReference(ref: String) {
+        _attractivePhotoReference.value = ref
+    }
+
+    fun setUnattractivePhotoReference(ref: String) {
+        _unattractivePhotoReference.value = ref
+    }
+
+    fun setHighSTDRiskPhotoReference(ref: String) {
+        _highSTDRiskPhoto.value = ref
+    }
+
+    fun setLowSTDRiskPhotoReference(ref: String) {
+        _lowSTDRiskPhoto.value = ref
+    }
 
     fun debugResourcePath(resourceName: String) {
         println("\n=== Resource Debug ===")
