@@ -44,6 +44,31 @@ class SexualDiscountViewModel: ViewModel() {
     private val _selectedPhoto = MutableStateFlow<String?>(null)
     val selectedPhoto: StateFlow<String?> = _selectedPhoto
 
+    /// Current phase (1-4)
+    private val _selectPhotoPhase = MutableStateFlow(1)
+    val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
+
+    private val _selectWaitingTimeProbabilityPhase = MutableStateFlow(1)
+    val selectWaitingTimeProbabilityPhase: StateFlow<Int> = _selectWaitingTimeProbabilityPhase
+
+    private val _selectedPhotoWaitTimePhase = MutableStateFlow(1)
+    val selectedPhotoWaitTimePhase: StateFlow<Int> = _selectedPhotoWaitTimePhase
+
+    // Store selections for each phase separately
+    private val _phaseSelections = mutableStateMapOf<Int, String>(
+        1 to "", // Attractive
+        2 to "", // Unattractive
+        3 to "", // High STD risk
+        4 to ""  // Low STD risk
+    )
+
+    private val _phasePlaceholderSelections = mutableStateMapOf<Int, String>(
+        1 to "", // Attractive
+        2 to "", // Unattractive
+        3 to "", // High STD risk
+        4 to ""  // Low STD risk
+    )
+
     init {
         loadSelectedFolderPath()
     }
@@ -94,7 +119,7 @@ class SexualDiscountViewModel: ViewModel() {
     //    _selectPhotoPhase.value += 1
     //}
 
-    fun setSexualOrientation(index: Int) {
+    fun setSexualBehavior(index: Int) {
         when (index) {
             0 -> _sexualBehavior.value = SexualBehavior.HETEROSEXUAL
             1 -> _sexualBehavior.value = SexualBehavior.WSW
@@ -163,20 +188,13 @@ class SexualDiscountViewModel: ViewModel() {
         return _lowSTDRiskPhoto.value == photoName
     }
 
-    /// Current phase (1-4)
-    private val _selectPhotoPhase = MutableStateFlow(1)
-    val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
-
-    // Store selections for each phase separately
-    private val _phaseSelections = mutableStateMapOf<Int, String>(
-        1 to "", // Attractive
-        2 to "", // Unattractive
-        3 to "", // High STD risk
-        4 to ""  // Low STD risk
-    )
 
     fun setSelectedPhoto(photoName: String) {
         _phaseSelections[_selectPhotoPhase.value] = photoName
+    }
+
+    fun setSelectedPlaceholderPhoto(photoPlaceholderName: String) {
+        _phasePlaceholderSelections[_selectPhotoPhase.value] = photoPlaceholderName
     }
 
     fun isPhotoSelected(photoName: String): Boolean {
@@ -187,9 +205,26 @@ class SexualDiscountViewModel: ViewModel() {
         return _phaseSelections[_selectPhotoPhase.value] != ""
     }
 
-
     fun updatePhotoPhase() {
         _selectPhotoPhase.value += 1
+    }
+
+    fun updateWaitingTimePhase() {
+        _selectWaitingTimeProbabilityPhase.value += 1
+        println(_phaseSelections[1])
+    }
+
+    fun updatePhotoWaitTimePhase() {
+        _selectedPhotoWaitTimePhase.value += 1
+    }
+
+    fun resetWaitingTimePhase() {
+        _selectWaitingTimeProbabilityPhase.value = 1
+    }
+
+    fun getPhasePhoto() {
+        val photoName = _phaseSelections[selectedPhotoWaitTimePhase.value]
+        val placeholderName = _phasePlaceholderSelections[selectedPhotoWaitTimePhase.value]
     }
 
     // Clear all selections when needed

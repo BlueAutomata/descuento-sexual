@@ -1,22 +1,18 @@
 package org.luigui.descuento.sexual.presentation
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.res.painterResource
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -266,7 +262,10 @@ fun PhotoItem(
     Card(
         modifier = modifier
             .aspectRatio(1f)
-            .clickable { viewModel.setSelectedPhoto(photoName) }
+            .clickable {
+                viewModel.setSelectedPhoto(photoName)
+                viewModel.setSelectedPlaceholderPhoto(photoPlaceholder)
+            }
             .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
             .graphicsLayer {
                 scaleX = scale

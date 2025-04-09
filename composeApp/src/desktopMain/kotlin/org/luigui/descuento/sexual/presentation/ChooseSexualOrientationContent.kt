@@ -88,7 +88,7 @@ fun ChooseSexualOrientationContent(
                     if (selectedIndex >= 0) {
                         Button(
                             onClick = {
-                                viewModel.setSexualOrientation(selectedIndex)
+                                viewModel.setSexualBehavior(selectedIndex)
                                 viewModel.getRandomPlaceholders()
                                 onNavigateToNextScreen()
                             }
