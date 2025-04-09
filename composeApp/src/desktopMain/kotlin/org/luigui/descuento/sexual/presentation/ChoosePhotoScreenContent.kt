@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -147,15 +148,10 @@ fun ChoosePhotoScreenContent(
                 BoxWithConstraints(
                     modifier = Modifier.fillMaxSize(0.6f).weight(1f)
                 ) {
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        RendererPhotos(
-                            viewModel = viewModel,
-                            photoPlaceholders = photoPlaceholders
-                        )
-                    }
+                    RendererPhotos(
+                        viewModel = viewModel,
+                        photoPlaceholders = photoPlaceholders
+                    )
                 }
 
                 Box(
@@ -210,9 +206,10 @@ fun RendererPhotos(
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(6),
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier.fillMaxSize(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(vertical = 8.dp)
     ) {
         items(repeatedPhotos.size) { index ->
             val photoName = repeatedPhotos[index]
