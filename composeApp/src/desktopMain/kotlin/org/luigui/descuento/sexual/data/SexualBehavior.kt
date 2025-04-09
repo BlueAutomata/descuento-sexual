@@ -1,6 +1,6 @@
 package org.luigui.descuento.sexual.data
 
-enum class SexualOrientation {
-    LESBIAN,
+enum class SexualBehavior {
+    WSW,
     HETEROSEXUAL
 }

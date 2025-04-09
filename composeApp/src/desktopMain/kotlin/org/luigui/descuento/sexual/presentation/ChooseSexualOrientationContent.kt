@@ -45,7 +45,7 @@ fun ChooseSexualOrientationContent(
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Seleccione su orientación sexual",
+                    text = "Seleccione su comportamiento sexual",
                     style = MaterialTheme.typography.headlineLarge,
                 )
 
@@ -54,7 +54,7 @@ fun ChooseSexualOrientationContent(
                 )
 
                 SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(0.75f)
                 ) {
                     options.forEachIndexed { index, label ->
                         SegmentedButton(
@@ -88,8 +88,9 @@ fun ChooseSexualOrientationContent(
                     if (selectedIndex >= 0) {
                         Button(
                             onClick = {
-                                onNavigateToNextScreen()
                                 viewModel.setSexualOrientation(selectedIndex)
+                                viewModel.getRandomPlaceholders()
+                                onNavigateToNextScreen()
                             }
                         ) {
                             Text(

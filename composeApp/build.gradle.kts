@@ -23,7 +23,6 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-
             implementation("cafe.adriel.voyager:voyager-navigator:1.1.0-beta02")
             implementation("cafe.adriel.voyager:voyager-transitions:1.1.0-beta02")
 
@@ -45,7 +44,6 @@ kotlin {
         }
     }
 }
-
 
 compose.desktop {
     application {
