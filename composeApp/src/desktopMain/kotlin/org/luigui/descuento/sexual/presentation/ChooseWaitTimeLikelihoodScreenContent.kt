@@ -148,12 +148,12 @@ private fun SexualDesirabilityText(phase: Int) {
         3 -> Triple(
             "La persona que cree ",
             "más probable",
-            " que tenga una ETS"
+            " que tenga una infección de transmisión sexual"
         )
         4 -> Triple(
             "La persona que cree ",
             "menos probable",
-            " que tenga una ETS"
+            " que tenga una infección de transmisión sexual"
         )
         else -> return
     }
