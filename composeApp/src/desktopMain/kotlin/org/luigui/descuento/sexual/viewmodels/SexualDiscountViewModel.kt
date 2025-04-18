@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -67,6 +68,17 @@ class SexualDiscountViewModel: ViewModel() {
 
     private val _rating = MutableStateFlow(0)
     val rating: StateFlow<Int> = _rating
+
+    private val _folderExistsMessage = MutableStateFlow(false)
+    val folderExistsMessage: StateFlow<Boolean> = _folderExistsMessage.asStateFlow()
+
+    fun showFolderExistsMessage() {
+        _folderExistsMessage.value = true
+    }
+
+    fun resetFolderExistsMessage() {
+        _folderExistsMessage.value = false
+    }
 
     // Store selections for each phase separately
     private val _phaseSelections = mutableStateMapOf<Int, String>(
@@ -339,13 +351,7 @@ class SexualDiscountViewModel: ViewModel() {
 
         try {
             // Sanitize and prepare directory paths
-            val sanitizedId = measurement.nameAndCode?.substringBefore("_")?.trim().takeIf { it!!.isNotEmpty() } ?: "Unknown"
-            val sanitizedName = measurement.nameAndCode?.substringAfter("_", "")!!.trim().takeIf { it.isNotEmpty() }
-                ?: "Unknown".replace(" ", "_")
-
-            val folderName = listOf(sanitizedId, sanitizedName)
-                .filter { it.isNotEmpty() }
-                .joinToString("_")
+            val folderName = measurement.nameAndCode!!
 
             val directoryPath = "$selectedFolderPath${File.separator}$folderName"
             val filePath = "$directoryPath${File.separator}data.xlsx"
