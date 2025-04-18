@@ -16,7 +16,7 @@ class RegisterParticipantScreen(
         RegisterParticipantScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(ChooseSexualOrientationScreen(viewModel))
+                navigator?.push(HowAttractiveAreYouScreen(viewModel))
             }
         )
     }

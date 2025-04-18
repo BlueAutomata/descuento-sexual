@@ -3,23 +3,25 @@ package org.luigui.descuento.sexual.presentation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
+import kotlin.math.roundToInt
 
 
 @Composable
@@ -27,6 +29,9 @@ fun HowAttractiveAreYouScreenContent(
     viewModel: SexualDiscountViewModel,
     onNavigateToNextScreen: () -> Unit
 ) {
+    var rating by remember { mutableStateOf(5) }
+    var sliderValue by remember { mutableStateOf(rating.toFloat()) }
+    var hasUserInteracted by remember { mutableStateOf(false) }
     MaterialTheme {
         Box(
             modifier = Modifier
@@ -40,17 +45,64 @@ fun HowAttractiveAreYouScreenContent(
             ) {
                 Text(
                     modifier = Modifier.padding(16.dp),
-                    text = "Registrar Participante",
+                    text = "¿Qué tan atractivo se considera?",
                     style = androidx.compose.material3.MaterialTheme.typography.headlineLarge,
                 )
 
-                Text(
-                    text = "Iniciales del primer nombre, primer y segundo apellido; seguido de los 3 últimos dígitos del documento de identidad. Ej: Ana Pérez Gil – APG037",
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .fillMaxWidth(0.75f)
-                        .padding(16.dp),
-                    style = androidx.compose.material3.MaterialTheme.typography.headlineSmall,
-                    textAlign = TextAlign.Start
+                        .fillMaxWidth(0.5f)
+                        .padding(horizontal = 32.dp)
+                ) {
+                    if (!hasUserInteracted) {
+                        Text(
+                            text ="Desliza para calificar (0-10)",
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                        )
+                    } else {
+                        Text(
+                            text = "Calificación: ${sliderValue.roundToInt()}",
+                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                        )
+                    }
+
+                    Slider(
+                        value = if (hasUserInteracted) sliderValue else 5f,
+                        onValueChange = {
+                            sliderValue = it
+                            hasUserInteracted = true
+                        },
+                        onValueChangeFinished = {
+                            rating = sliderValue.roundToInt()
+                        },
+                        valueRange = 0f..10f,
+                        steps = 9,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    // Scale Labels
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(text = "0", style = androidx.compose.material3.MaterialTheme.typography.bodyLarge)
+                        Text(text = "10", style = androidx.compose.material3.MaterialTheme.typography.bodyLarge)
+                    }
+
+                    Text(
+                        text = "(0 = Poco atractivo | 10 = Altamente atractivo)",
+                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+
+                Spacer(
+                    modifier = Modifier.weight(1f)
                 )
 
                 Box(
@@ -62,7 +114,8 @@ fun HowAttractiveAreYouScreenContent(
                     Button(
                         onClick = {
                             onNavigateToNextScreen()
-                        }
+                        },
+                        enabled = hasUserInteracted
                     ) {
                         Text(
                             text = "Siguiente",
@@ -71,7 +124,6 @@ fun HowAttractiveAreYouScreenContent(
                     }
                 }
             }
-
         }
     }
 }
