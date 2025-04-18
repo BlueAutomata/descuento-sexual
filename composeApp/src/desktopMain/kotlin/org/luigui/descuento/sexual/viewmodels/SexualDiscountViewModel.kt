@@ -339,13 +339,7 @@ class SexualDiscountViewModel: ViewModel() {
 
         try {
             // Sanitize and prepare directory paths
-            val sanitizedId = measurement.nameAndCode?.substringBefore("_")?.trim().takeIf { it!!.isNotEmpty() } ?: "Unknown"
-            val sanitizedName = measurement.nameAndCode?.substringAfter("_", "")!!.trim().takeIf { it.isNotEmpty() }
-                ?: "Unknown".replace(" ", "_")
-
-            val folderName = listOf(sanitizedId, sanitizedName)
-                .filter { it.isNotEmpty() }
-                .joinToString("_")
+            val folderName = measurement.nameAndCode!!
 
             val directoryPath = "$selectedFolderPath${File.separator}$folderName"
             val filePath = "$directoryPath${File.separator}data.xlsx"

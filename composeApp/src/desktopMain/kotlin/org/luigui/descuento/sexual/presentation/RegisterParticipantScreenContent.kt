@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,7 +70,11 @@ fun RegisterParticipantScreenContent(
                 // Full name field
                 TextField(
                     value = nameAndCode,
-                    onValueChange = { newText -> viewModel.updateAndCode(newText) },
+                    onValueChange = { newText ->
+                        // Filter out spaces and special characters using regex
+                        val filteredText = newText.replace("[^a-zA-Z0-9]".toRegex(), "")
+                        viewModel.updateAndCode(filteredText)
+                    },
                     label = {
                         Text(
                             text = "Iniciales + 3 últimos dígitos.",
@@ -84,7 +90,11 @@ fun RegisterParticipantScreenContent(
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                         .fillMaxWidth(0.75f),
-                    textStyle = LocalTextStyle.current.copy(fontSize = 18.sp)
+                    textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        autoCorrectEnabled = false
+                    )
                 )
 
                 Spacer(
