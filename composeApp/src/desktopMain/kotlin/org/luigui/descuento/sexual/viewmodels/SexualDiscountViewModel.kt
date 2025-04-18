@@ -376,6 +376,14 @@ class SexualDiscountViewModel: ViewModel() {
             // Create new data row
             val newRow = sheet?.createRow(sheet.lastRowNum + 1)
 
+            val sexualDesirabilitySpanish = when (measurement.desirableCategory) {
+                "ATTRACTIVE" -> "ATRACTIVO"
+                "UNATTRACTIVE" -> "POCO ATRACTIVO"
+                "HIGH_STD_RISK" -> "ALTO RIESGO DE ETS"
+                "LOW_STD_RISK" -> "BAJO RIESGO DE ETS"
+                else -> measurement.desirableCategory ?: "Desconocido"
+            }
+
             // Translate sexual behavior to Spanish
             val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
                 "WSW" -> "msm"
@@ -403,7 +411,7 @@ class SexualDiscountViewModel: ViewModel() {
                 this?.createCell(1)?.setCellValue(currentTime)
                 this?.createCell(2)?.setCellValue(measurement.nameAndCode)
                 this?.createCell(3)?.setCellValue(sexualBehaviorSpanish)
-                this?.createCell(4)?.setCellValue(measurement.desirableCategory)
+                this?.createCell(4)?.setCellValue(sexualDesirabilitySpanish)
                 this?.createCell(5)?.setCellValue(measurement.photoReference)
                 this?.createCell(6)?.setCellValue(waitTimeSpanish)
                 this?.createCell(7)?.setCellValue(measurement.probabilityScore.toString())
