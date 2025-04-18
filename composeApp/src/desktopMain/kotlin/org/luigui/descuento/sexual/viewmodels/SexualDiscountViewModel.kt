@@ -327,8 +327,11 @@ class SexualDiscountViewModel: ViewModel() {
     }
 
     private fun writeMeasurementToExcel(measurement: Measurement) {
-        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-        val currentDateTime = LocalDateTime.now().format(dateTimeFormatter)
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+        val currentDateTime = LocalDateTime.now()
+        val currentDate = currentDateTime.format(dateFormatter)
+        val currentTime = currentDateTime.format(timeFormatter)
 
         var workbook: Workbook? = null
         var fis: FileInputStream? = null
@@ -375,8 +378,10 @@ class SexualDiscountViewModel: ViewModel() {
 
             // Translate sexual behavior to Spanish
             val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
-                "Protected" -> "Protegido"
-                "Unprotected" -> "Sin protección"
+                "WSW" -> "msm"
+                "HETEROSEXUAL" -> "heterosexual"
+                "Protected" -> "protegido"
+                "Unprotected" -> "sin protección"
                 else -> measurement.sexualBehavior ?: "Desconocido"
             }
 
@@ -394,13 +399,14 @@ class SexualDiscountViewModel: ViewModel() {
 
             // Populate cells with measurement data
             with(newRow) {
-                this?.createCell(0)?.setCellValue(currentDateTime)
-                this?.createCell(1)?.setCellValue(measurement.nameAndCode)
-                this?.createCell(2)?.setCellValue(sexualBehaviorSpanish)
-                this?.createCell(3)?.setCellValue(measurement.desirableCategory)
-                this?.createCell(4)?.setCellValue(measurement.photoReference)
-                this?.createCell(5)?.setCellValue(waitTimeSpanish)
-                this?.createCell(6)?.setCellValue(measurement.probabilityScore.toString())
+                this?.createCell(0)?.setCellValue(currentDate)
+                this?.createCell(1)?.setCellValue(currentTime)
+                this?.createCell(2)?.setCellValue(measurement.nameAndCode)
+                this?.createCell(3)?.setCellValue(sexualBehaviorSpanish)
+                this?.createCell(4)?.setCellValue(measurement.desirableCategory)
+                this?.createCell(5)?.setCellValue(measurement.photoReference)
+                this?.createCell(6)?.setCellValue(waitTimeSpanish)
+                this?.createCell(7)?.setCellValue(measurement.probabilityScore.toString())
             }
 
             // Write changes
@@ -423,12 +429,13 @@ class SexualDiscountViewModel: ViewModel() {
     private fun createHeaderRow(sheet: Sheet) {
         sheet.createRow(0).apply {
             createCell(0).setCellValue("Fecha")
-            createCell(1).setCellValue("Nombre y Código")
-            createCell(2).setCellValue("Comportamiento Sexual")
-            createCell(3).setCellValue("Categoría de Deseabilidad")
-            createCell(4).setCellValue("Referencia de Foto")
-            createCell(5).setCellValue("Tiempo de Espera")
-            createCell(6).setCellValue("Probabilidad")
+            createCell(1).setCellValue("Hora")
+            createCell(2).setCellValue("Nombre y Código")
+            createCell(3).setCellValue("Comportamiento Sexual")
+            createCell(4).setCellValue("Categoría de Deseabilidad")
+            createCell(5).setCellValue("Referencia de Foto")
+            createCell(6).setCellValue("Tiempo de Espera")
+            createCell(7).setCellValue("Probabilidad")
         }
     }
 }
