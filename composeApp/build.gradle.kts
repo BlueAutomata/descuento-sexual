@@ -51,7 +51,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "org.luigui.descuento.sexual"
+            packageName = "Descuento Sexual"
             packageVersion = "1.0.0"
         }
     }

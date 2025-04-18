@@ -97,7 +97,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
                 Text(
                     text = "(0 = Sin protección | 10 = Esperaría por protección)",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
