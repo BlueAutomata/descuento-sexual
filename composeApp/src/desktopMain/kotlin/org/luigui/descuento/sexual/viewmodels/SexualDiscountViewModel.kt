@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
@@ -67,6 +68,17 @@ class SexualDiscountViewModel: ViewModel() {
 
     private val _rating = MutableStateFlow(0)
     val rating: StateFlow<Int> = _rating
+
+    private val _folderExistsMessage = MutableStateFlow(false)
+    val folderExistsMessage: StateFlow<Boolean> = _folderExistsMessage.asStateFlow()
+
+    fun showFolderExistsMessage() {
+        _folderExistsMessage.value = true
+    }
+
+    fun resetFolderExistsMessage() {
+        _folderExistsMessage.value = false
+    }
 
     // Store selections for each phase separately
     private val _phaseSelections = mutableStateMapOf<Int, String>(

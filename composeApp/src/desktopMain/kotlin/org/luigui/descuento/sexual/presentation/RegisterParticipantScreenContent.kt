@@ -9,11 +9,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,17 +40,29 @@ fun RegisterParticipantScreenContent(
     onNavigateToNextScreen: () -> Unit
 ) {
     val nameAndCode by viewModel.nameAndCode.collectAsState()
-
-    // Check if the form is valid
     val isFormValid = nameAndCode.isNotBlank()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // State to show a message if the folder already exists
-    var showFolderExistsMessage by remember { mutableStateOf(false) }
+    // Show snackbar when folder exists
+    LaunchedEffect(Unit) {
+        viewModel.folderExistsMessage.collect { showMessage ->
+            if (showMessage) {
+                snackbarHostState.showSnackbar(
+                    message = "Ya existe una carpeta para este usuario.",
+                    duration = SnackbarDuration.Short,
+                )
+                viewModel.resetFolderExistsMessage()
+            }
+        }
+    }
 
-    MaterialTheme{
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .padding(16.dp),
         ) {
             Column(
@@ -67,11 +85,9 @@ fun RegisterParticipantScreenContent(
                     textAlign = TextAlign.Start
                 )
 
-                // Full name field
                 TextField(
                     value = nameAndCode,
                     onValueChange = { newText ->
-                        // Filter out spaces and special characters using regex
                         val filteredText = newText.replace("[^a-zA-Z0-9]".toRegex(), "")
                         viewModel.updateAndCode(filteredText)
                     },
@@ -93,22 +109,11 @@ fun RegisterParticipantScreenContent(
                     textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Characters,
-                        autoCorrectEnabled = false
+                        autoCorrect = false
                     )
                 )
 
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-
-                // Show a message if the folder already exists
-                if (showFolderExistsMessage) {
-                    Text(
-                        text = "Ya existe una carpeta para este usuario.",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp, color = Color.Red),
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
+                Spacer(modifier = Modifier.weight(1f))
 
                 Box(
                     modifier = Modifier
@@ -119,7 +124,7 @@ fun RegisterParticipantScreenContent(
                     Button(
                         onClick = {
                             if (viewModel.doesFolderExist()) {
-                                showFolderExistsMessage = true
+                                viewModel.showFolderExistsMessage()
                             } else {
                                 onNavigateToNextScreen()
                             }
@@ -133,7 +138,6 @@ fun RegisterParticipantScreenContent(
                     }
                 }
             }
-
         }
     }
 }
