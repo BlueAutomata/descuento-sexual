@@ -7,8 +7,19 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.WorkbookFactory
+import org.apache.poi.xssf.usermodel.XSSFWorkbook
+import org.luigui.descuento.sexual.data.Measurement
 import org.luigui.descuento.sexual.data.SexualBehavior
+import org.luigui.descuento.sexual.data.SexualDesirability
+import org.luigui.descuento.sexual.data.WaitTime
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class SexualDiscountViewModel: ViewModel() {
     private val _sexualBehavior = MutableStateFlow<SexualBehavior?>(null)
@@ -53,6 +64,9 @@ class SexualDiscountViewModel: ViewModel() {
 
     private val _selectedPhotoWaitTimePhase = MutableStateFlow(1)
     val selectedPhotoWaitTimePhase: StateFlow<Int> = _selectedPhotoWaitTimePhase
+
+    private val _rating = MutableStateFlow(0)
+    val rating: StateFlow<Int> = _rating
 
     // Store selections for each phase separately
     private val _phaseSelections = mutableStateMapOf<Int, String>(
@@ -115,10 +129,6 @@ class SexualDiscountViewModel: ViewModel() {
         return if (resourceExists(potentialPath)) potentialPath else null
     }
 
-    // fun updatePhotoPhase() {
-    //    _selectPhotoPhase.value += 1
-    //}
-
     fun setSexualBehavior(index: Int) {
         when (index) {
             0 -> _sexualBehavior.value = SexualBehavior.HETEROSEXUAL
@@ -147,12 +157,16 @@ class SexualDiscountViewModel: ViewModel() {
             listOf(
                 "images/placeholder_man_1.png",
                 "images/placeholder_man_2.png",
-            ).shuffled().take(2) // Get 4 random male placeholders
+                "images/placeholder_man_3.png",
+                "images/placeholder_man_4.png",
+            ).shuffled().take(4) // Get 4 random male placeholders
         } else {
             listOf(
                 "images/placeholder_woman_1.png",
                 "images/placeholder_woman_2.png",
-            ).shuffled().take(2) // Get 4 random female placeholders
+                "images/placeholder_woman_3.png",
+                "images/placeholder_woman_4.png",
+            ).shuffled().take(4) // Get 4 random female placeholders
         }
     }
 
@@ -222,19 +236,19 @@ class SexualDiscountViewModel: ViewModel() {
         _selectWaitingTimeProbabilityPhase.value = 1
     }
 
-    fun getPhasePhoto() {
+    fun getPhasePhoto(): String {
         val photoName = _phaseSelections[selectedPhotoWaitTimePhase.value]
         val placeholderName = _phasePlaceholderSelections[selectedPhotoWaitTimePhase.value]
+        return if (getPhotoPath(photoName!!) != null) {
+            photoName
+        } else {
+            placeholderName!!
+        }
     }
 
-    // Clear all selections when needed
     fun clearAllSelections() {
         _phaseSelections.keys.forEach { _phaseSelections[it] = "" }
     }
-
-    // Remove duplicate photo state variables
-    // Remove individual isXxxPhotoSelected functions
-    // Keep only the unified selection system abov
 
     fun debugResourcePath(resourceName: String) {
         println("\n=== Resource Debug ===")
@@ -263,4 +277,159 @@ class SexualDiscountViewModel: ViewModel() {
         }
         println("===================\n")
     }
+
+    fun setRating(score: Int) {
+        _rating.value = score
+    }
+
+    fun saveMeasurement() {
+        try {
+            val measurement = createMeasurement()
+            writeMeasurementToExcel(measurement)
+        } catch (e: Exception) {
+            println("Measurement Failed to save measurement: ${e.message}")
+        }
+    }
+
+    private fun createMeasurement(): Measurement {
+        return Measurement(
+            nameAndCode = _nameAndCode.value.ifEmpty { "Unknown" },
+            sexualBehavior = _sexualBehavior.value?.toString() ?: "Not specified",
+            desirableCategory = getDesirabilityCategory(),
+            photoReference = getPhasePhoto(),
+            waitTime = getWaitTime(),
+            probabilityScore = _rating.value
+
+        )
+    }
+
+    private fun getDesirabilityCategory(): String {
+        return when (selectedPhotoWaitTimePhase.value) {
+            1 -> SexualDesirability.ATTRACTIVE
+            2 -> SexualDesirability.UNATTRACTIVE
+            3 -> SexualDesirability.HIGH_STD_RISK
+            4 -> SexualDesirability.LOW_STD_RISK
+            else -> null
+        }?.toString() ?: "Unknown"
+    }
+
+    private fun getWaitTime(): String {
+        return when (_selectWaitingTimeProbabilityPhase.value) {
+            1 -> WaitTime.ONE_HOUR
+            2 -> WaitTime.THREE_HOURS
+            3 -> WaitTime.SIX_HOURS
+            4 -> WaitTime.ONE_DAY
+            5 -> WaitTime.ONE_WEEK
+            6 -> WaitTime.ONE_MONTH
+            7 -> WaitTime.THREE_MONTHS
+            else -> null
+        }?.toString() ?: "Not specified"
+    }
+
+    private fun writeMeasurementToExcel(measurement: Measurement) {
+        val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val currentDateTime = LocalDateTime.now().format(dateTimeFormatter)
+
+        var workbook: Workbook? = null
+        var fis: FileInputStream? = null
+        var fos: FileOutputStream? = null
+
+        try {
+            // Sanitize and prepare directory paths
+            val sanitizedId = measurement.nameAndCode?.substringBefore("_")?.trim().takeIf { it!!.isNotEmpty() } ?: "Unknown"
+            val sanitizedName = measurement.nameAndCode?.substringAfter("_", "")!!.trim().takeIf { it.isNotEmpty() }
+                ?: "Unknown".replace(" ", "_")
+
+            val folderName = listOf(sanitizedId, sanitizedName)
+                .filter { it.isNotEmpty() }
+                .joinToString("_")
+
+            val directoryPath = "$selectedFolderPath${File.separator}$folderName"
+            val filePath = "$directoryPath${File.separator}data.xlsx"
+
+            // Ensure directory exists
+            File(directoryPath).takeUnless { it.exists() }?.mkdirs()
+
+            val file = File(filePath)
+
+            // Create or load workbook
+            workbook = if (file.exists()) {
+                fis = FileInputStream(file)
+                WorkbookFactory.create(fis)
+            } else {
+                XSSFWorkbook().also { wb ->
+                    wb.createSheet("Sheet1").apply {
+                        createHeaderRow(this)
+                    }
+                }
+            }
+
+            val sheet = workbook?.getSheetAt(0) ?: workbook?.createSheet("Sheet1").also {
+                if (it != null) {
+                    createHeaderRow(it)
+                }
+            }
+
+            // Create new data row
+            val newRow = sheet?.createRow(sheet.lastRowNum + 1)
+
+            // Translate sexual behavior to Spanish
+            val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
+                "Protected" -> "Protegido"
+                "Unprotected" -> "Sin protección"
+                else -> measurement.sexualBehavior ?: "Desconocido"
+            }
+
+            // Translate wait time to Spanish
+            val waitTimeSpanish = when (measurement.waitTime) {
+                "ONE_HOUR" -> "1 hora"
+                "THREE_HOURS" -> "3 horas"
+                "SIX_HOURS" -> "6 horas"
+                "ONE_DAY" -> "1 día"
+                "ONE_WEEK" -> "1 semana"
+                "ONE_MONTH" -> "1 mes"
+                "THREE_MONTHS" -> "3 meses"
+                else -> measurement.waitTime ?: "No especificado"
+            }
+
+            // Populate cells with measurement data
+            with(newRow) {
+                this?.createCell(0)?.setCellValue(currentDateTime)
+                this?.createCell(1)?.setCellValue(measurement.nameAndCode)
+                this?.createCell(2)?.setCellValue(sexualBehaviorSpanish)
+                this?.createCell(3)?.setCellValue(measurement.desirableCategory)
+                this?.createCell(4)?.setCellValue(measurement.photoReference)
+                this?.createCell(5)?.setCellValue(waitTimeSpanish)
+                this?.createCell(6)?.setCellValue(measurement.probabilityScore.toString())
+            }
+
+            // Write changes
+            fos = FileOutputStream(file)
+            workbook?.write(fos)
+        } catch (e: Exception) {
+            println("ExcelWrite Error writing measurement to Excel: ${e.message}")
+            throw e // Or handle differently based on your needs
+        } finally {
+            listOf(fis, fos, workbook).forEach { resource ->
+                try {
+                    resource?.close()
+                } catch (e: Exception) {
+                    println("ExcelWrite Error closing resource: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun createHeaderRow(sheet: Sheet) {
+        sheet.createRow(0).apply {
+            createCell(0).setCellValue("Fecha")
+            createCell(1).setCellValue("Nombre y Código")
+            createCell(2).setCellValue("Comportamiento Sexual")
+            createCell(3).setCellValue("Categoría de Deseabilidad")
+            createCell(4).setCellValue("Referencia de Foto")
+            createCell(5).setCellValue("Tiempo de Espera")
+            createCell(6).setCellValue("Probabilidad")
+        }
+    }
 }
+

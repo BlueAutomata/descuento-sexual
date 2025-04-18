@@ -64,7 +64,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     .clip(RoundedCornerShape(8.dp))
             ) {
                 Image(
-                    painter = painterResource("images/placeholder_woman_1.png"),
+                    painter = painterResource(viewModel.getPhasePhoto()),
                     contentDescription = "Illustration",
                     contentScale = ContentScale.Fit,
                     modifier = Modifier.fillMaxSize()
@@ -97,7 +97,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
                 Text(
                     text = "(0 = Sin protección | 10 = Esperaría por protección)",
-                    style = MaterialTheme.typography.bodySmall,
+                    style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }
@@ -107,7 +107,9 @@ fun ChooseWaitTimeLikelihoodScreenContent(
             if (rating != 5) {
                 Button(
                     onClick = {
-                        //viewModel.setWaitTimeLikelihood(rating)
+                        viewModel.setRating(rating)
+                        viewModel.saveMeasurement()
+
                         if (selectWaitingTimeProbabilityPhase == 7 &&
                             selectedPhotoWaitTimePhase == 4) {
                             onNavigateToNextScreen()
@@ -119,6 +121,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                         else {
                             viewModel.updateWaitingTimePhase()
                         }
+                        rating = 5
                     },
                     modifier = Modifier.align(Alignment.End)
                 ) {
