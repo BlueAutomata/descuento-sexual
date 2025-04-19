@@ -109,7 +109,7 @@ fun RegisterParticipantScreenContent(
                     textStyle = LocalTextStyle.current.copy(fontSize = 18.sp),
                     keyboardOptions = KeyboardOptions(
                         capitalization = KeyboardCapitalization.Characters,
-                        autoCorrect = false
+                        autoCorrectEnabled = false
                     )
                 )
 
