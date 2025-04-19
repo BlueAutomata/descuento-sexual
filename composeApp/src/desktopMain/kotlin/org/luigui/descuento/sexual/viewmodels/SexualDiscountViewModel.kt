@@ -16,6 +16,7 @@ import org.luigui.descuento.sexual.data.Measurement
 import org.luigui.descuento.sexual.data.SexualBehavior
 import org.luigui.descuento.sexual.data.SexualDesirability
 import org.luigui.descuento.sexual.data.WaitTime
+import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -345,26 +346,34 @@ class SexualDiscountViewModel: ViewModel() {
         val currentDate = currentDateTime.format(dateFormatter)
         val currentTime = currentDateTime.format(timeFormatter)
 
-        var workbook: Workbook? = null
-        var fis: FileInputStream? = null
-        var fos: FileOutputStream? = null
-
         try {
+            // Validate required fields
+            if (measurement.nameAndCode.isNullOrEmpty()) {
+                throw IllegalArgumentException("Measurement nameAndCode cannot be null or empty")
+            }
+            if (selectedFolderPath.isNullOrEmpty()) {
+                throw IllegalArgumentException("Selected folder path cannot be null or empty")
+            }
+
             // Sanitize and prepare directory paths
             val folderName = measurement.nameAndCode!!
+            val rootDirectoryPath = "$selectedFolderPath${File.separator}"
+            val rootFilePath = "$rootDirectoryPath${File.separator}data.xlsx"
+            val userDirectoryPath = "$selectedFolderPath${File.separator}$folderName"
+            val userFilePath = "$userDirectoryPath${File.separator}data.xlsx"
 
-            val directoryPath = "$selectedFolderPath${File.separator}$folderName"
-            val filePath = "$directoryPath${File.separator}data.xlsx"
+            // Ensure directories exist
+            File(rootDirectoryPath).takeUnless { it.exists() }?.mkdirs()
+            File(userDirectoryPath).takeUnless { it.exists() }?.mkdirs()
 
-            // Ensure directory exists
-            File(directoryPath).takeUnless { it.exists() }?.mkdirs()
+            val rootFile = File(rootFilePath)
+            val userFile = File(userFilePath)
 
-            val file = File(filePath)
-
-            // Create or load workbook
-            workbook = if (file.exists()) {
-                fis = FileInputStream(file)
-                WorkbookFactory.create(fis)
+            // Create or load root workbook and add data
+            val rootWorkbook = if (rootFile.exists()) {
+                FileInputStream(rootFile).use { fis ->
+                    WorkbookFactory.create(fis)
+                }
             } else {
                 XSSFWorkbook().also { wb ->
                     wb.createSheet("Sheet1").apply {
@@ -373,70 +382,76 @@ class SexualDiscountViewModel: ViewModel() {
                 }
             }
 
-            val sheet = workbook?.getSheetAt(0) ?: workbook?.createSheet("Sheet1").also {
-                if (it != null) {
+            // Create or load user workbook and add data
+            val userWorkbook = if (userFile.exists()) {
+                FileInputStream(userFile).use { fis ->
+                    WorkbookFactory.create(fis)
+                }
+            } else {
+                XSSFWorkbook().also { wb ->
+                    wb.createSheet("Sheet1").apply {
+                        createHeaderRow(this)
+                    }
+                }
+            }
+
+            // Process both workbooks similarly
+            listOf(rootWorkbook to rootFile, userWorkbook to userFile).forEach { (workbook, file) ->
+                val sheet = workbook.getSheetAt(0) ?: workbook.createSheet("Sheet1").also {
                     createHeaderRow(it)
                 }
-            }
 
-            // Create new data row
-            val newRow = sheet?.createRow(sheet.lastRowNum + 1)
+                // Create new data row
+                val newRow = sheet.createRow(sheet.lastRowNum + 1)
 
-            val sexualDesirabilitySpanish = when (measurement.desirableCategory) {
-                "ATTRACTIVE" -> "ATRACTIVO"
-                "UNATTRACTIVE" -> "POCO ATRACTIVO"
-                "HIGH_STD_RISK" -> "ALTO RIESGO DE ETS"
-                "LOW_STD_RISK" -> "BAJO RIESGO DE ETS"
-                else -> measurement.desirableCategory ?: "Desconocido"
-            }
+                // Translate values to Spanish
+                val sexualDesirabilitySpanish = when (measurement.desirableCategory) {
+                    "ATTRACTIVE" -> "ATRACTIVO"
+                    "UNATTRACTIVE" -> "POCO ATRACTIVO"
+                    "HIGH_STD_RISK" -> "ALTO RIESGO DE ETS"
+                    "LOW_STD_RISK" -> "BAJO RIESGO DE ETS"
+                    else -> measurement.desirableCategory ?: "Desconocido"
+                }
 
-            // Translate sexual behavior to Spanish
-            val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
-                "WSW" -> "msm"
-                "HETEROSEXUAL" -> "heterosexual"
-                "Protected" -> "protegido"
-                "Unprotected" -> "sin protección"
-                else -> measurement.sexualBehavior ?: "Desconocido"
-            }
+                val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
+                    "WSW" -> "msm"
+                    "HETEROSEXUAL" -> "heterosexual"
+                    "Protected" -> "protegido"
+                    "Unprotected" -> "sin protección"
+                    else -> measurement.sexualBehavior ?: "Desconocido"
+                }
 
-            // Translate wait time to Spanish
-            val waitTimeSpanish = when (measurement.waitTime) {
-                "ONE_HOUR" -> "1 hora"
-                "THREE_HOURS" -> "3 horas"
-                "SIX_HOURS" -> "6 horas"
-                "ONE_DAY" -> "1 día"
-                "ONE_WEEK" -> "1 semana"
-                "ONE_MONTH" -> "1 mes"
-                "THREE_MONTHS" -> "3 meses"
-                else -> measurement.waitTime ?: "No especificado"
-            }
+                val waitTimeSpanish = when (measurement.waitTime) {
+                    "ONE_HOUR" -> "1 hora"
+                    "THREE_HOURS" -> "3 horas"
+                    "SIX_HOURS" -> "6 horas"
+                    "ONE_DAY" -> "1 día"
+                    "ONE_WEEK" -> "1 semana"
+                    "ONE_MONTH" -> "1 mes"
+                    "THREE_MONTHS" -> "3 meses"
+                    else -> measurement.waitTime ?: "No especificado"
+                }
 
-            // Populate cells with measurement data
-            with(newRow) {
-                this?.createCell(0)?.setCellValue(currentDate)
-                this?.createCell(1)?.setCellValue(currentTime)
-                this?.createCell(2)?.setCellValue(measurement.nameAndCode)
-                this?.createCell(3)?.setCellValue(sexualBehaviorSpanish)
-                this?.createCell(4)?.setCellValue(sexualDesirabilitySpanish)
-                this?.createCell(5)?.setCellValue(measurement.photoReference)
-                this?.createCell(6)?.setCellValue(waitTimeSpanish)
-                this?.createCell(7)?.setCellValue(measurement.probabilityScore.toString())
-            }
+                // Populate cells with measurement data
+                newRow.apply {
+                    createCell(0).setCellValue(currentDate)
+                    createCell(1).setCellValue(currentTime)
+                    createCell(2).setCellValue(measurement.nameAndCode)
+                    createCell(3).setCellValue(sexualBehaviorSpanish)
+                    createCell(4).setCellValue(sexualDesirabilitySpanish)
+                    createCell(5).setCellValue(measurement.photoReference)
+                    createCell(6).setCellValue(waitTimeSpanish)
+                    createCell(7).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
+                }
 
-            // Write changes
-            fos = FileOutputStream(file)
-            workbook?.write(fos)
-        } catch (e: Exception) {
-            println("ExcelWrite Error writing measurement to Excel: ${e.message}")
-            throw e // Or handle differently based on your needs
-        } finally {
-            listOf(fis, fos, workbook).forEach { resource ->
-                try {
-                    resource?.close()
-                } catch (e: Exception) {
-                    println("ExcelWrite Error closing resource: ${e.message}")
+                // Write workbook
+                FileOutputStream(file).use { fos ->
+                    workbook.write(fos)
                 }
             }
+        } catch (e: Exception) {
+            println("ExcelWrite Error writing measurement to Excel: ${e.message}")
+            throw e
         }
     }
 
