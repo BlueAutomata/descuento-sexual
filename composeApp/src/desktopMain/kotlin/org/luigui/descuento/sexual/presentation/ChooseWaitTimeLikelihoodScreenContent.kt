@@ -104,29 +104,28 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if (rating != 5) {
-                Button(
-                    onClick = {
-                        viewModel.setRating(rating)
-                        viewModel.saveMeasurement()
+            Button(
+                onClick = {
+                    viewModel.setRating(rating)
+                    viewModel.saveMeasurement()
 
-                        if (selectWaitingTimeProbabilityPhase == 7 &&
-                            selectedPhotoWaitTimePhase == 4) {
-                            onNavigateToNextScreen()
-                        }
-                        else if (selectWaitingTimeProbabilityPhase == 7) {
-                            viewModel.resetWaitingTimePhase()
-                            viewModel.updatePhotoWaitTimePhase()
-                        }
-                        else {
-                            viewModel.updateWaitingTimePhase()
-                        }
-                        rating = 5
-                    },
-                    modifier = Modifier.align(Alignment.End)
-                ) {
-                    Text(text = "Siguiente")
-                }
+                    if (selectWaitingTimeProbabilityPhase == 7 &&
+                        selectedPhotoWaitTimePhase == 4) {
+                        onNavigateToNextScreen()
+                    }
+                    else if (selectWaitingTimeProbabilityPhase == 7) {
+                        viewModel.resetWaitingTimePhase()
+                        viewModel.updatePhotoWaitTimePhase()
+                    }
+                    else {
+                        viewModel.updateWaitingTimePhase()
+                    }
+                    rating = 5
+                },
+                enabled = rating != 5,
+                modifier = Modifier.align(Alignment.End)
+            ) {
+                Text(text = "Siguiente")
             }
         }
     }
