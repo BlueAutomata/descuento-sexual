@@ -9,14 +9,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.apache.poi.ss.usermodel.Sheet
-import org.apache.poi.ss.usermodel.Workbook
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.luigui.descuento.sexual.data.Measurement
 import org.luigui.descuento.sexual.data.SexualBehavior
 import org.luigui.descuento.sexual.data.SexualDesirability
 import org.luigui.descuento.sexual.data.WaitTime
-import java.io.Closeable
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
