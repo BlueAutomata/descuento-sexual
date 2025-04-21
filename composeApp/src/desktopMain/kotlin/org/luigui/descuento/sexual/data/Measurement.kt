@@ -7,4 +7,5 @@ data class Measurement(
     val photoReference: String? = null,
     val waitTime: String? = null,
     val probabilityScore: Int? = null,
+    val comment: String? = null
 )

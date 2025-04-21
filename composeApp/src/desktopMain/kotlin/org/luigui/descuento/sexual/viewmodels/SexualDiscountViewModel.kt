@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import org.apache.poi.ss.usermodel.Row
 import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.WorkbookFactory
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
@@ -70,6 +71,9 @@ class SexualDiscountViewModel: ViewModel() {
 
     private val _folderExistsMessage = MutableStateFlow(false)
     val folderExistsMessage: StateFlow<Boolean> = _folderExistsMessage.asStateFlow()
+
+    private val _comment = MutableStateFlow("")
+    val comment: StateFlow<String> = _comment
 
     fun showFolderExistsMessage() {
         _folderExistsMessage.value = true
@@ -309,7 +313,8 @@ class SexualDiscountViewModel: ViewModel() {
             desirableCategory = getDesirabilityCategory(),
             photoReference = getPhasePhoto(),
             waitTime = getWaitTime(),
-            probabilityScore = _rating.value
+            probabilityScore = _rating.value,
+            comment = ""
 
         )
     }
@@ -440,6 +445,7 @@ class SexualDiscountViewModel: ViewModel() {
                     createCell(5).setCellValue(measurement.photoReference)
                     createCell(6).setCellValue(waitTimeSpanish)
                     createCell(7).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
+                    createCell(8).setCellValue(measurement.comment)
                 }
 
                 // Write workbook
@@ -463,7 +469,69 @@ class SexualDiscountViewModel: ViewModel() {
             createCell(5).setCellValue("Referencia de Foto")
             createCell(6).setCellValue("Tiempo de Espera")
             createCell(7).setCellValue("Probabilidad")
+            createCell(8).setCellValue("Comentario")
         }
+    }
+
+    fun addCommentToLastRow(comment: String) {
+        try {
+            // Validate required fields
+            if (selectedFolderPath.isNullOrEmpty()) {
+                throw IllegalArgumentException("Selected folder path cannot be null or empty")
+            }
+            if (comment.isBlank()) {
+                throw IllegalArgumentException("Comment cannot be blank")
+            }
+            if (_nameAndCode.value.isEmpty()) {
+                throw IllegalArgumentException("Measurement nameAndCode cannot be null or empty")
+            }
+
+            // Prepare directory paths
+            val rootDirectoryPath = "$selectedFolderPath${File.separator}"
+            val rootFilePath = "$rootDirectoryPath${File.separator}data.xlsx"
+            val userDirectoryPath = "$selectedFolderPath${File.separator}${_nameAndCode.value}"
+            val userFilePath = "$userDirectoryPath${File.separator}data.xlsx"
+
+            // List of files to update (root and user-specific)
+            val filesToUpdate = listOf(
+                File(rootFilePath) to "root",
+                File(userFilePath) to "user"
+            )
+
+            filesToUpdate.forEach { (file, fileType) ->
+                if (!file.exists()) {
+                    println("$fileType Excel file does not exist at ${file.absolutePath}")
+                    return@forEach  // Skip this file if it doesn't exist
+                }
+
+                // Load workbook
+                val workbook = FileInputStream(file).use { fis ->
+                    WorkbookFactory.create(fis)
+                }
+
+                val sheet = workbook.getSheetAt(0) ?: throw IllegalStateException("Sheet not found in $fileType file")
+
+                // Get the last row (data row, skipping header)
+                val lastRow = sheet.getRow(sheet.lastRowNum) ?: throw IllegalStateException("No data rows found in $fileType file")
+
+                // Update the comment cell (column 8)
+                lastRow.getCell(8, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(comment)
+
+                // Write workbook
+                FileOutputStream(file).use { fos ->
+                    workbook.write(fos)
+                }
+
+                println("Comment added successfully to the last row in $fileType file")
+            }
+        } catch (e: Exception) {
+            println("Error adding comment to Excel: ${e.message}")
+            throw e
+        }
+    }
+
+    fun saveComment(comment: String) {
+        _comment.value = comment
     }
 }
 
