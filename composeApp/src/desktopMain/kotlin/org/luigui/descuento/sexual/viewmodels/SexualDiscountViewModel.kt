@@ -35,9 +35,6 @@ class SexualDiscountViewModel: ViewModel() {
     private val _nameAndCode = MutableStateFlow("")
     val nameAndCode: StateFlow<String> = _nameAndCode
 
-    // private val _selectPhotoPhase = MutableStateFlow(1)
-    //val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
-
     private val _photoPlaceholders = MutableStateFlow<List<String>>(emptyList())
     val photoPlaceholders: StateFlow<List<String>> = _photoPlaceholders
 
@@ -411,8 +408,8 @@ class SexualDiscountViewModel: ViewModel() {
                 val sexualDesirabilitySpanish = when (measurement.desirableCategory) {
                     "ATTRACTIVE" -> "ATRACTIVO"
                     "UNATTRACTIVE" -> "POCO ATRACTIVO"
-                    "HIGH_STD_RISK" -> "ALTO RIESGO DE ETS"
-                    "LOW_STD_RISK" -> "BAJO RIESGO DE ETS"
+                    "HIGH_STD_RISK" -> "ALTO RIESGO DE ITS"
+                    "LOW_STD_RISK" -> "BAJO RIESGO DE ITS"
                     else -> measurement.desirableCategory ?: "Desconocido"
                 }
 
