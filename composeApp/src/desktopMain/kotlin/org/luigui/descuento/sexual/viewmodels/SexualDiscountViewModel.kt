@@ -476,9 +476,6 @@ class SexualDiscountViewModel: ViewModel() {
             if (selectedFolderPath.isNullOrEmpty()) {
                 throw IllegalArgumentException("Selected folder path cannot be null or empty")
             }
-            if (comment.isBlank()) {
-                throw IllegalArgumentException("Comment cannot be blank")
-            }
             if (_nameAndCode.value.isEmpty()) {
                 throw IllegalArgumentException("Measurement nameAndCode cannot be null or empty")
             }

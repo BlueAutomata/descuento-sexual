@@ -107,7 +107,7 @@ fun InstructionScreenContent(
                     ) {
                         Text(
                             text = "Siguiente",
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
                         )
                     }
                 }
