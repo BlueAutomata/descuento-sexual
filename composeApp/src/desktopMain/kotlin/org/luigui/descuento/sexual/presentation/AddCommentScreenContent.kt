@@ -62,7 +62,11 @@ fun AddCommentScreenContent(
             OutlinedTextField(
                 value = comment,
                 onValueChange = { comment = it },
-                label = { Text("Escriba su comentario aquí") },
+                label = {
+                    Text(
+                        text = "Escriba su comentario aquí",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                    ) },
                 placeholder = { Text("Opcional") },
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
@@ -88,6 +92,7 @@ fun AddCommentScreenContent(
             ) {
                 Text(
                     text = "Siguiente",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
                 )
             }
         }

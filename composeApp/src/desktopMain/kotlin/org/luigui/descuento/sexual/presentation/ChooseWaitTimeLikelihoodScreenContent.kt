@@ -126,7 +126,10 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                 enabled = rating != 5,
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Text(text = "Siguiente")
+                Text(
+                    text = "Siguiente",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                )
             }
         }
     }

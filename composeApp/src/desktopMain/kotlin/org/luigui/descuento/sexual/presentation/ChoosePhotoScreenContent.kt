@@ -55,6 +55,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import org.luigui.descuento.sexual.data.SexualBehavior
@@ -175,7 +176,7 @@ fun ChoosePhotoScreenContent(
                 ) {
                     Text(
                         text = "Siguiente",
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                     )
                 }
             }
