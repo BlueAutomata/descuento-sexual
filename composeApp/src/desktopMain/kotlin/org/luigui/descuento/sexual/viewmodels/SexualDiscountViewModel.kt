@@ -411,8 +411,8 @@ class SexualDiscountViewModel: ViewModel() {
                 val sexualDesirabilitySpanish = when (measurement.desirableCategory) {
                     "ATTRACTIVE" -> "ATRACTIVO"
                     "UNATTRACTIVE" -> "POCO ATRACTIVO"
-                    "HIGH_STD_RISK" -> "ALTO RIESGO DE ETS"
-                    "LOW_STD_RISK" -> "BAJO RIESGO DE ETS"
+                    "HIGH_STD_RISK" -> "ALTO RIESGO DE ITS"
+                    "LOW_STD_RISK" -> "BAJO RIESGO DE ITS"
                     else -> measurement.desirableCategory ?: "Desconocido"
                 }
 
