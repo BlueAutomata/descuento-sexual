@@ -32,6 +32,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 @Composable
@@ -91,13 +92,13 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Text(text = "0", style = MaterialTheme.typography.bodyLarge)
-                    Text(text = "10", style = MaterialTheme.typography.bodyLarge)
+                    Text(text = "0", style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp))
+                    Text(text = "10", style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp))
                 }
 
                 Text(
                     text = "(0 = Sin protección | 10 = Esperaría por protección)",
-                    style = MaterialTheme.typography.bodyLarge,
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier.padding(top = 8.dp)
                 )
             }

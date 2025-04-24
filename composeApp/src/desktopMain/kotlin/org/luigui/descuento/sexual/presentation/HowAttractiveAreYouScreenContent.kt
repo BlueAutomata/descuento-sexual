@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import kotlin.math.roundToInt
 
@@ -46,7 +47,7 @@ fun HowAttractiveAreYouScreenContent(
                 Text(
                     modifier = Modifier.padding(16.dp),
                     text = "¿Qué tan atractivo se considera?",
-                    style = androidx.compose.material3.MaterialTheme.typography.headlineLarge,
+                    style = MaterialTheme.typography.headlineLarge,
                 )
 
                 Spacer(
@@ -62,12 +63,12 @@ fun HowAttractiveAreYouScreenContent(
                     if (!hasUserInteracted) {
                         Text(
                             text ="Desliza para calificar (0-10)",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
                         )
                     } else {
                         Text(
                             text = "Calificación: ${sliderValue.roundToInt()}",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
                         )
                     }
 
@@ -90,13 +91,19 @@ fun HowAttractiveAreYouScreenContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "0", style = androidx.compose.material3.MaterialTheme.typography.bodyLarge)
-                        Text(text = "10", style = androidx.compose.material3.MaterialTheme.typography.bodyLarge)
+                        Text(
+                            text = "0",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                        )
+                        Text(
+                            text = "10",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                        )
                     }
 
                     Text(
                         text = "(0 = Poco atractivo | 10 = Altamente atractivo)",
-                        style = androidx.compose.material3.MaterialTheme.typography.bodyLarge,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
@@ -119,7 +126,7 @@ fun HowAttractiveAreYouScreenContent(
                     ) {
                         Text(
                             text = "Siguiente",
-                            style = androidx.compose.material3.MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                 }

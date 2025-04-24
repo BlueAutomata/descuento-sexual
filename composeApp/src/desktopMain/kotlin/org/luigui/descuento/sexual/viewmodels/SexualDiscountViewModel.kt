@@ -35,9 +35,6 @@ class SexualDiscountViewModel: ViewModel() {
     private val _nameAndCode = MutableStateFlow("")
     val nameAndCode: StateFlow<String> = _nameAndCode
 
-    // private val _selectPhotoPhase = MutableStateFlow(1)
-    //val selectPhotoPhase: StateFlow<Int> = _selectPhotoPhase
-
     private val _photoPlaceholders = MutableStateFlow<List<String>>(emptyList())
     val photoPlaceholders: StateFlow<List<String>> = _photoPlaceholders
 

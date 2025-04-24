@@ -1,21 +1,17 @@
 package org.luigui.descuento.sexual.presentation
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,8 +51,8 @@ fun AddCommentScreenContent(
             // Instruction Text
             Text(
                 text = "¿Le gustaría dejar algún comentario sobre esta tarea?",
-                style = MaterialTheme.typography.bodyLarge,
-                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.headlineMedium,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
                     .padding(bottom = 8.dp)
@@ -72,9 +67,9 @@ fun AddCommentScreenContent(
                 modifier = Modifier
                     .fillMaxWidth(0.75f)
                     .heightIn(min = 100.dp),
-                textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+                textStyle = LocalTextStyle.current.copy(fontSize = 20.sp),
                 singleLine = false,
-                maxLines = 5,
+                maxLines = 10,
                 shape = MaterialTheme.shapes.medium
             )
 
