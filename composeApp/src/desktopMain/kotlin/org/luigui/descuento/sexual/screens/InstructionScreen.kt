@@ -2,14 +2,23 @@ package org.luigui.descuento.sexual.screens
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import org.luigui.descuento.sexual.presentation.InstructionScreenContent
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
-class InstructionsScreen(
+class InstructionScreen(
     private val viewModel: SexualDiscountViewModel
 ): Screen {
     @Composable
     override fun Content() {
-        TODO("Not yet implemented")
+        val navigator = LocalNavigator.current
+
+        InstructionScreenContent(
+            viewModel = viewModel,
+            onNavigateToNextScreen = {
+                navigator?.push(ChooseWaitTimeLikelihoodScreen(viewModel))
+            }
+        )
 
     }
 }

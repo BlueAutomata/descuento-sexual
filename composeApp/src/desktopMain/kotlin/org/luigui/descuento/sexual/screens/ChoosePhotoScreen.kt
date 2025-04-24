@@ -17,7 +17,7 @@ class ChoosePhotoScreen(
         ChoosePhotoScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(ChooseWaitTimeLikelihoodScreen(viewModel))
+                navigator?.push(InstructionScreen(viewModel))
             }
         )
     }
