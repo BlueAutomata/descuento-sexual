@@ -49,15 +49,15 @@ fun InstructionScreenContent(
                     ) {
                         Text(
                             text = "A continuación, encontrarás una serie de situaciones hipotéticas relacionadas con decisiones personales. En cada una, se te pedirá que indiques, usando una escala del 0 al 10, la probabilidad de tomar una decisión en función de una demora en el acceso a un recurso.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
-                            modifier = Modifier.padding(bottom = 8.dp)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 30.sp),
+                            modifier = Modifier.padding(bottom = 16.dp)
                         )
 
                         Text(
                             text = "Recuerda:",
                             style = MaterialTheme.typography.bodyLarge.copy(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 20.sp
+                                fontSize = 30.sp
                             ),
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
@@ -65,13 +65,14 @@ fun InstructionScreenContent(
                         // Bullet point items
                         val bulletPoints = listOf(
                             "No hay respuestas correctas o incorrectas.",
-                            "Por favor, responde de forma honesta según lo que harías en esa situación."
+                            "Por favor, responde de forma honesta según lo que harías en esa situación.",
+                            "Toda la información es anónima y confidencial."
                         )
 
                         bulletPoints.forEach { point ->
                             Text(
                                 text = "• $point",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 30.sp),
                                 modifier = Modifier
                                     .padding(start = 16.dp, bottom = 4.dp)
                                     .fillMaxWidth()
@@ -79,14 +80,8 @@ fun InstructionScreenContent(
                         }
 
                         Text(
-                            text = "• Toda la información es anónima y confidencial.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
-                            modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
-                        )
-
-                        Text(
                             text = "Cuando estés lista, puedes comenzar.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 30.sp),
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }
