@@ -180,7 +180,13 @@ class SexualDiscountViewModel: ViewModel() {
                 "images/placeholder_woman_4.png",
                 "images/placeholder_woman_5.png",
                 "images/placeholder_woman_6.png",
-            ).shuffled().take(6)
+                "images/placeholder_woman_7.png",
+                "images/placeholder_woman_8.png",
+                "images/placeholder_woman_9.png",
+                "images/placeholder_woman_10.png",
+                "images/placeholder_woman_11.png",
+                "images/placeholder_woman_12.png",
+            ).shuffled().take(12)
         }
     }
 
