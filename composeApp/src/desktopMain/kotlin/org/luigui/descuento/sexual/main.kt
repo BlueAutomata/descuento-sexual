@@ -10,7 +10,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         title = "descuento-sexual",
         state = rememberWindowState().apply {
-            placement = WindowPlacement.Fullscreen  // WindowPlacement.Maximized //
+            placement = WindowPlacement.Fullscreen //  // WindowPlacement.Maximized
         },
         undecorated = false // Optional: removes window decorations for true fullscreen
     ) {

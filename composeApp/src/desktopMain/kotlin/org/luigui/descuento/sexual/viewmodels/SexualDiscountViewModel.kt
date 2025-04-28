@@ -171,14 +171,16 @@ class SexualDiscountViewModel: ViewModel() {
                 "images/placeholder_man_2.png",
                 "images/placeholder_man_3.png",
                 "images/placeholder_man_4.png",
-            ).shuffled().take(4) // Get 4 random male placeholders
+            ).shuffled().take(4)
         } else {
             listOf(
                 "images/placeholder_woman_1.png",
                 "images/placeholder_woman_2.png",
                 "images/placeholder_woman_3.png",
                 "images/placeholder_woman_4.png",
-            ).shuffled().take(4) // Get 4 random female placeholders
+                "images/placeholder_woman_5.png",
+                "images/placeholder_woman_6.png",
+            ).shuffled().take(6)
         }
     }
 
@@ -216,7 +218,12 @@ class SexualDiscountViewModel: ViewModel() {
 
 
     fun setSelectedPhoto(photoName: String) {
+        _selectedPhoto.value = photoName
         _phaseSelections[_selectPhotoPhase.value] = photoName
+    }
+
+    fun resetSelectedPhoto() {
+        _selectedPhoto.value = null
     }
 
     fun setSelectedPlaceholderPhoto(photoPlaceholderName: String) {
