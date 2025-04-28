@@ -49,7 +49,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
     val valueDescriptions = mapOf(
         0 to "Definitivamente tendría relaciones sexuales sin condón",
         2 to "Muy probablemente tendría sexo sin condón",
-        3 to "No seleccionado", // Added description for 3
+        3 to "", // Empty string for 3 (not displayed)
         4 to "Probablemente tendría sexo sin condón",
         5 to "No estoy seguro/a de si esperaría o no",
         7 to "Probablemente esperaría para usar condón",
@@ -139,9 +139,9 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 )
 
-                // Value descriptions
+                // Value descriptions - filter out empty descriptions
                 Column {
-                    valueDescriptions.forEach { (value, description) ->
+                    valueDescriptions.filter { it.value.isNotEmpty() }.forEach { (value, description) ->
                         Text(
                             text = description,
                             style = if (value == rating) {
