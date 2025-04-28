@@ -119,7 +119,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
                 // Short summary (0 = No protection, 10 = Protection)
                 Text(
-                    text = "(0 = Sin protección | 10 = Esperaría por protección)",
+                    text = "(Sin protección | Esperaría por protección)",
                     style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
                     modifier = Modifier
                         .padding(top = 8.dp)
@@ -143,7 +143,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                 Column {
                     valueDescriptions.forEach { (value, description) ->
                         Text(
-                            text = "$value – $description",
+                            text = description,
                             style = if (value == rating) {
                                 MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                             } else {
