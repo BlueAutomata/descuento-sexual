@@ -102,7 +102,7 @@ fun HowAttractiveAreYouScreenContent(
                     }
 
                     Text(
-                        text = "(0 = Poco atractivo | 10 = Altamente atractivo)",
+                        text = "(0 = Poco atractiva | 10 = Altamente atractiva)",
                         style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                         modifier = Modifier.padding(top = 8.dp)
                     )
