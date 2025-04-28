@@ -50,7 +50,7 @@ fun AddCommentScreenContent(
 
             // Instruction Text
             Text(
-                text = "¿Le gustaría dejar algún comentario sobre esta tarea?",
+                text = "¿Te gustaría dejar algún comentario sobre esta investigación?",
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center,
                 modifier = Modifier
