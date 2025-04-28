@@ -216,7 +216,12 @@ class SexualDiscountViewModel: ViewModel() {
 
 
     fun setSelectedPhoto(photoName: String) {
+        _selectedPhoto.value = photoName
         _phaseSelections[_selectPhotoPhase.value] = photoName
+    }
+
+    fun resetSelectedPhoto() {
+        _selectedPhoto.value = null
     }
 
     fun setSelectedPlaceholderPhoto(photoPlaceholderName: String) {

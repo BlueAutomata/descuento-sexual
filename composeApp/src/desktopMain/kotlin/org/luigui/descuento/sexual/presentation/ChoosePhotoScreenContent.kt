@@ -188,6 +188,7 @@ fun ChoosePhotoScreenContent(
                             viewModel.getRandomPlaceholders()
                             viewModel.updatePhotoPhase()
                         }
+                        viewModel.resetSelectedPhoto()
                     },
                     enabled = viewModel.isPhotoSelected()
                 ) {
@@ -208,6 +209,7 @@ fun RendererPhotos(
     photoPlaceholders: List<String>
 ) {
     val currentPhase by viewModel.selectPhotoPhase.collectAsState()
+    val selectedPhoto by viewModel.selectedPhoto.collectAsState()
     val photos = remember(viewModel.sexualBehavior.value) {
         if (viewModel.sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
             (1..30).map { "man_$it" }
@@ -225,8 +227,14 @@ fun RendererPhotos(
     val columns = 6
     val rows = 5
 
-    // Preview state - using a separate preview area outside the grid
-    var previewPhoto by remember { mutableStateOf<String?>(null) }
+    // Track hover state separately from selection
+    var hoveredPhoto by remember { mutableStateOf<String?>(null) }
+
+    // Determine which photo to show in preview (selected takes priority)
+    val previewPhoto = remember(selectedPhoto, hoveredPhoto) {
+        print("Selected photos is: ${selectedPhoto.toString()}")
+        selectedPhoto ?: hoveredPhoto
+    }
 
     BoxWithConstraints(
         modifier = Modifier
@@ -276,10 +284,13 @@ fun RendererPhotos(
                                                     val event = awaitPointerEvent()
                                                     when (event.type) {
                                                         PointerEventType.Enter -> {
-                                                            previewPhoto = photoName
+                                                            hoveredPhoto = photoName
                                                         }
                                                         PointerEventType.Exit -> {
-                                                            // Keep the preview showing
+                                                            // Only clear hover if it's the current hovered photo
+                                                            if (hoveredPhoto == photoName) {
+                                                                hoveredPhoto = null
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -311,7 +322,7 @@ fun RendererPhotos(
                 }
             }
 
-            // Persistent preview area (fixed position)
+            // Persistent preview area
             Box(
                 modifier = Modifier
                     .weight(0.3f)
@@ -340,14 +351,25 @@ fun RendererPhotos(
                     }
 
                     Text(
-                        text = "Preview: $photoName",
+                        text = buildAnnotatedString {
+                            append("Preview: $photoName")
+                            if (photoName == selectedPhoto) {
+                                append(" ")
+                                withStyle(style = SpanStyle(
+                                    color = Color.Blue,
+                                    fontWeight = FontWeight.Bold
+                                )) {
+                                    append("(Selected)")
+                                }
+                            }
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier
                             .padding(top = 8.dp)
                             .align(Alignment.BottomCenter)
                     )
                 } ?: run {
-                    // Placeholder when no image is hovered
+                    // Placeholder when no image is hovered or selected
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
