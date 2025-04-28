@@ -202,7 +202,6 @@ fun ChoosePhotoScreenContent(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun RendererPhotos(
     viewModel: SexualDiscountViewModel,
@@ -349,25 +348,6 @@ fun RendererPhotos(
                             modifier = Modifier.fillMaxSize()
                         )
                     }
-
-                    Text(
-                        text = buildAnnotatedString {
-                            append("Preview: $photoName")
-                            if (photoName == selectedPhoto) {
-                                append(" ")
-                                withStyle(style = SpanStyle(
-                                    color = Color.Blue,
-                                    fontWeight = FontWeight.Bold
-                                )) {
-                                    append("(Selected)")
-                                }
-                            }
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .padding(top = 8.dp)
-                            .align(Alignment.BottomCenter)
-                    )
                 } ?: run {
                     // Placeholder when no image is hovered or selected
                     Box(
@@ -379,7 +359,7 @@ fun RendererPhotos(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Hover over an image\nto see preview",
+                            text = "Pasa el cursor sobre una imagen (o haz clic en ella) para ver la vista previa",
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.bodyMedium
                         )
