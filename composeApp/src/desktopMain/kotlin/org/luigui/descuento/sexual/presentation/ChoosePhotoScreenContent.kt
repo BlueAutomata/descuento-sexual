@@ -361,7 +361,7 @@ fun RendererPhotos(
                         Text(
                             text = "Pasa el cursor sobre una imagen (o haz clic en ella) para ver la vista previa",
                             textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 18.sp)
                         )
                     }
                 }
