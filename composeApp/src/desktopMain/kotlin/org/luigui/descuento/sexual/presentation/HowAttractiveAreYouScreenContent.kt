@@ -120,6 +120,7 @@ fun HowAttractiveAreYouScreenContent(
                 ) {
                     Button(
                         onClick = {
+                            viewModel.setAttractiveness(rating)
                             onNavigateToNextScreen()
                         },
                         enabled = hasUserInteracted

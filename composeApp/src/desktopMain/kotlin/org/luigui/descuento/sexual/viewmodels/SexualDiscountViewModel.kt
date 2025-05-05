@@ -66,6 +66,9 @@ class SexualDiscountViewModel: ViewModel() {
     private val _rating = MutableStateFlow(0)
     val rating: StateFlow<Int> = _rating
 
+    private val _attractivenessRating = MutableStateFlow(0)
+    val attractivenessRating: StateFlow<Int> =  _attractivenessRating
+
     private val _folderExistsMessage = MutableStateFlow(false)
     val folderExistsMessage: StateFlow<Boolean> = _folderExistsMessage.asStateFlow()
 
@@ -319,6 +322,7 @@ class SexualDiscountViewModel: ViewModel() {
     private fun createMeasurement(): Measurement {
         return Measurement(
             nameAndCode = _nameAndCode.value.ifEmpty { "Unknown" },
+            selfAttractiveness = _attractivenessRating.value,
             sexualBehavior = _sexualBehavior.value?.toString() ?: "Not specified",
             desirableCategory = getDesirabilityCategory(),
             photoReference = getPhasePhoto(),
@@ -450,12 +454,13 @@ class SexualDiscountViewModel: ViewModel() {
                     createCell(0).setCellValue(currentDate)
                     createCell(1).setCellValue(currentTime)
                     createCell(2).setCellValue(measurement.nameAndCode)
-                    createCell(3).setCellValue(sexualBehaviorSpanish)
-                    createCell(4).setCellValue(sexualDesirabilitySpanish)
-                    createCell(5).setCellValue(measurement.photoReference)
-                    createCell(6).setCellValue(waitTimeSpanish)
-                    createCell(7).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
-                    createCell(8).setCellValue(measurement.comment)
+                    createCell(3).setCellValue(measurement.selfAttractiveness?.toString() ?: "N/A")  // New cell
+                    createCell(4).setCellValue(sexualBehaviorSpanish)
+                    createCell(5).setCellValue(sexualDesirabilitySpanish)
+                    createCell(6).setCellValue(measurement.photoReference)
+                    createCell(7).setCellValue(waitTimeSpanish)
+                    createCell(8).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
+                    createCell(9).setCellValue(measurement.comment)
                 }
 
                 // Write workbook
@@ -474,12 +479,13 @@ class SexualDiscountViewModel: ViewModel() {
             createCell(0).setCellValue("Fecha")
             createCell(1).setCellValue("Hora")
             createCell(2).setCellValue("Nombre y Código")
-            createCell(3).setCellValue("Comportamiento Sexual")
-            createCell(4).setCellValue("Categoría de Deseabilidad")
-            createCell(5).setCellValue("Referencia de Foto")
-            createCell(6).setCellValue("Tiempo de Espera")
-            createCell(7).setCellValue("Probabilidad")
-            createCell(8).setCellValue("Comentario")
+            createCell(3).setCellValue("Atractivo Propio")  // New column
+            createCell(4).setCellValue("Comportamiento Sexual")
+            createCell(5).setCellValue("Categoría de Deseabilidad")
+            createCell(6).setCellValue("Referencia de Foto")
+            createCell(7).setCellValue("Tiempo de Espera")
+            createCell(8).setCellValue("Probabilidad")
+            createCell(9).setCellValue("Comentario")
         }
     }
 
@@ -521,8 +527,7 @@ class SexualDiscountViewModel: ViewModel() {
                 // Get the last row (data row, skipping header)
                 val lastRow = sheet.getRow(sheet.lastRowNum) ?: throw IllegalStateException("No data rows found in $fileType file")
 
-                // Update the comment cell (column 8)
-                lastRow.getCell(8, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(comment)
+                lastRow.getCell(9, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(comment)  // Changed from 8 to 9
 
                 // Write workbook
                 FileOutputStream(file).use { fos ->
@@ -539,6 +544,10 @@ class SexualDiscountViewModel: ViewModel() {
 
     fun saveComment(comment: String) {
         _comment.value = comment
+    }
+
+    fun setAttractiveness(rating: Int) {
+        _attractivenessRating.value = rating
     }
 }
 
