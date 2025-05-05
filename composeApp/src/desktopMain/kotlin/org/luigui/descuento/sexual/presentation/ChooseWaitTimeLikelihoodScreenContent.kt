@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,22 +45,18 @@ fun ChooseWaitTimeLikelihoodScreenContent(
     val selectedPhotoWaitTimePhase by viewModel.selectedPhotoWaitTimePhase.collectAsState()
     val selectWaitingTimeProbabilityPhase by viewModel.selectWaitingTimeProbabilityPhase.collectAsState()
 
-    var rating by remember { mutableStateOf(3) }
-
-    val allowedValues = listOf(0, 2, 3, 4, 5, 7, 10)
+    var rating by remember { mutableStateOf(0) }
+    val allowedValues = listOf(0, 1, 2, 3, 4, 5, 6)
     val valueDescriptions = mapOf(
-        0 to "Definitivamente tendría relaciones sexuales sin condón",
+        1 to "Definitivamente tendría relaciones sexuales sin condón",
         2 to "Muy probablemente tendría sexo sin condón",
-        3 to "No seleccionado", // Added description for 3
-        4 to "Probablemente tendría sexo sin condón",
-        5 to "No estoy seguro/a de si esperaría o no",
-        7 to "Probablemente esperaría para usar condón",
-        10 to "Definitivamente esperaría para tener relaciones sexuales con condón"
+        3 to "Probablemente tendría sexo sin condón",
+        4 to "No estoy segura de si esperaría o no",
+        5 to "Probablemente esperaría para usar condón",
+        6 to "Definitivamente esperaría para tener relaciones sexuales con condón"
     )
 
-    var sliderPosition by remember {
-        mutableStateOf(allowedValues.indexOf(3).toFloat())
-    }
+    var sliderPosition by remember { mutableStateOf(0f) }
 
     MaterialTheme {
         Column(
@@ -88,39 +86,60 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                 )
             }
 
-            // 0-10 Rating Scale
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .padding(horizontal = 32.dp)
             ) {
-                Slider(
-                    value = sliderPosition,
-                    onValueChange = { newPosition ->
-                        sliderPosition = newPosition
-                        rating = allowedValues[newPosition.roundToInt()]
-                    },
-                    valueRange = 0f..(allowedValues.size - 1).toFloat(),
-                    steps = allowedValues.size - 2,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = "Sin protección",
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+                    )
 
-                // Selected value (or "Nothing selected" placeholder)
+                    Slider(
+                        value = sliderPosition.coerceAtLeast(0f),
+                        onValueChange = { newPosition ->
+                            sliderPosition = newPosition
+                            if (newPosition >= 0) {
+                                rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
+                            }
+                        },
+                        valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
+                        steps = allowedValues.size - 2,
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 8.dp) // Small padding to prevent touching
+                    )
+
+                    Text(
+                        text = "Esperaría por protección",
+                        textAlign = TextAlign.End,
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+                    )
+                }
+
+                // Selected value
                 Text(
-                    text = if (rating == 3) "Selecciona una opción" else "Seleccionado: $rating",
-                    style = MaterialTheme.typography.headlineSmall.copy(
+                    text = if (sliderPosition < 0) "⚠\uFE0F Por favor, selecciona una opción" else "Seleccionado: $rating",
+                    style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = if (rating == 3) MaterialTheme.colorScheme.error
+                        color = if (sliderPosition < 0) MaterialTheme.colorScheme.error
                         else MaterialTheme.colorScheme.primary
                     ),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
 
-                // Short summary (0 = No protection, 10 = Protection)
+                // Short summary
                 Text(
-                    text = "(0 = Sin protección | 10 = Esperaría por protección)",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp),
+                    text = "(Sin protección | Esperaría por protección)",
+                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                     modifier = Modifier
                         .padding(top = 8.dp)
                         .align(Alignment.CenterHorizontally),
@@ -129,28 +148,21 @@ fun ChooseWaitTimeLikelihoodScreenContent(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Persistent warning (always visible, but only red when unselected)
-                Text(
-                    text = "⚠️ Por favor, selecciona una opción",
-                    color = if (rating == 3) MaterialTheme.colorScheme.error
-                    else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                    fontWeight = if (rating == 3) FontWeight.Bold else FontWeight.Normal,
-                    modifier = Modifier.padding(bottom = 8.dp),
-                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                )
-
                 // Value descriptions
                 Column {
                     valueDescriptions.forEach { (value, description) ->
                         Text(
-                            text = "$value – $description",
-                            style = if (value == rating) {
-                                MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                            text = description,
+                            style = if (sliderPosition >= 0 && value == rating) {
+                                MaterialTheme.typography.bodyLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 20.sp
+                                )
                             } else {
-                                MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
+                                MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
                             },
                             modifier = Modifier.padding(vertical = 4.dp),
-                            color = if (value == rating) {
+                            color = if (sliderPosition >= 0 && value == rating) {
                                 MaterialTheme.colorScheme.primary
                             } else {
                                 MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
@@ -178,10 +190,10 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     else {
                         viewModel.updateWaitingTimePhase()
                     }
-                    rating = 3
-                    sliderPosition = allowedValues.indexOf(3).toFloat()
+                    rating = 0
+                    sliderPosition = allowedValues.indexOf(0).toFloat()
                 },
-                enabled = rating != 3,
+                enabled = sliderPosition != 0f,
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text(
