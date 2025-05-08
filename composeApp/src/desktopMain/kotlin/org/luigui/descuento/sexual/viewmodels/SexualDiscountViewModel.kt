@@ -140,7 +140,7 @@ class SexualDiscountViewModel: ViewModel() {
     }
 
     fun getPhotoPath(photoName: String): String? {
-        val potentialPath = "$photoName.png"
+        val potentialPath = "images/$photoName.jpg"
         return if (resourceExists(potentialPath)) potentialPath else null
     }
 

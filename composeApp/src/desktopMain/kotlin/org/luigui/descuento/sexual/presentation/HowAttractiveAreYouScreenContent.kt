@@ -57,18 +57,51 @@ fun HowAttractiveAreYouScreenContent(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
+                        .fillMaxWidth(0.75f)
                         .padding(horizontal = 32.dp)
                 ) {
-                    if (!hasUserInteracted) {
+                    Column {
                         Text(
-                            text ="Desliza para calificar (0-10)",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                            text = "A continuación, verás una barra deslizante que va del 0 al 10. Esta barra sirve para indicar qué tan atractiva te consideras a ti misma.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            modifier = Modifier.align(Alignment.Start)
                         )
-                    } else {
+
                         Text(
-                            text = "Calificación: ${sliderValue.roundToInt()}",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                            text = "\nEl número 0 significa que no te consideras nada atractiva.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+
+                        Text(
+                            text = "\nEl número 10 significa que te consideras muy atractiva.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+
+                        Text(
+                            text = "\nPor favor, desliza la barra hasta el número que mejor refleje cómo te sientes con respecto a tu propia apariencia física en este momento.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+
+                        Text(
+                            text = "\nNo hay respuestas correctas o incorrectas. Elige el número que mejor exprese tu opinión personal.",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+                    }
+
+                    if (hasUserInteracted) {
+                        Text(
+                            text = "\nCalificación: ${sliderValue.roundToInt()}",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
+                        )
+                    }
+                    else {
+                        Text(
+                            text = "\nDesliza la barra: ${sliderValue.roundToInt()}",
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
                         )
                     }
 
@@ -93,17 +126,17 @@ fun HowAttractiveAreYouScreenContent(
                     ) {
                         Text(
                             text = "0",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
                         )
                         Text(
                             text = "10",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
                         )
                     }
 
                     Text(
                         text = "(0 = Poco atractiva | 10 = Altamente atractiva)",
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
                         modifier = Modifier.padding(top = 8.dp)
                     )
                 }
