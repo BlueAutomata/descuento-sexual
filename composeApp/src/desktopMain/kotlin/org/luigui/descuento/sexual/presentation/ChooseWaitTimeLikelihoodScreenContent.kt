@@ -89,7 +89,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(0.6f)
                     .padding(horizontal = 32.dp)
             ) {
                 Row(
@@ -100,7 +100,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     Text(
                         text = "Sin protección",
                         textAlign = TextAlign.Start,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
                     )
 
                     Slider(
@@ -121,7 +121,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                     Text(
                         text = "Esperaría por protección",
                         textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 16.sp)
+                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
                     )
                 }
 
@@ -134,16 +134,6 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                         else MaterialTheme.colorScheme.primary
                     ),
                     modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-
-                // Short summary
-                Text(
-                    text = "(Sin protección | Esperaría por protección)",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally),
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
