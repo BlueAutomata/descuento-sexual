@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import org.luigui.descuento.sexual.presentation.ChoosePhotoScreenContent
-import org.luigui.descuento.sexual.presentation.ChooseSexualOrientationContent
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 
 class ChoosePhotoScreen(
@@ -17,7 +16,7 @@ class ChoosePhotoScreen(
         ChoosePhotoScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(InstructionScreen(viewModel))
+                navigator?.push(ChooseWaitTimeLikelihoodScreen(viewModel))
             }
         )
     }

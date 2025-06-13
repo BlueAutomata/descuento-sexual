@@ -75,6 +75,9 @@ class SexualDiscountViewModel: ViewModel() {
     private val _comment = MutableStateFlow("")
     val comment: StateFlow<String> = _comment
 
+    private val _photoType = MutableStateFlow("")
+    val photoType: StateFlow<String> = _photoType
+
     fun showFolderExistsMessage() {
         _folderExistsMessage.value = true
     }
@@ -140,8 +143,17 @@ class SexualDiscountViewModel: ViewModel() {
     }
 
     fun getPhotoPath(photoName: String): String? {
-        val potentialPath = "images/$photoName.jpg"
+        val potentialPath = "images/${photoName}${_photoType.value}.jpg"
         return if (resourceExists(potentialPath)) potentialPath else null
+    }
+
+    fun switchPhoto(real: Boolean) {
+        if (real) {
+            _photoType.value = ""
+        }
+        else {
+            _photoType.value = "_fake"
+        }
     }
 
     fun setSexualBehavior(index: Int) {
@@ -268,7 +280,7 @@ class SexualDiscountViewModel: ViewModel() {
         val photoName = _phaseSelections[selectedPhotoWaitTimePhase.value]
         val placeholderName = _phasePlaceholderSelections[selectedPhotoWaitTimePhase.value]
         return if (getPhotoPath(photoName!!) != null) {
-            photoName
+            "images/${photoName}${_photoType.value}.jpg"
         } else {
             placeholderName!!
         }

@@ -1,12 +1,6 @@
 package org.luigui.descuento.sexual.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,20 +10,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -45,36 +33,23 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.unit.times
-import androidx.compose.ui.zIndex
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.luigui.descuento.sexual.data.SexualBehavior
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import kotlin.math.ceil
@@ -209,11 +184,11 @@ fun RendererPhotos(
 ) {
     val currentPhase by viewModel.selectPhotoPhase.collectAsState()
     val selectedPhoto by viewModel.selectedPhoto.collectAsState()
-    val photos = remember(viewModel.sexualBehavior.value) {
+    val photos = remember(viewModel.sexualBehavior.value, currentPhase) {
         if (viewModel.sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
-            (1..30).map { "man_$it" }
+            (1..30).map { "man_$it" }.shuffled()
         } else {
-            (1..30).map { "woman_$it" }
+            (1..30).map { "woman_$it" }.shuffled()
         }
     }
 
@@ -384,14 +359,16 @@ fun PhotoItem(
     }
 
     // Selection styling
-    val borderColor = if (isSelected) Color.Blue else Color.Transparent
-    val borderWidth = if (isSelected && showBorder) 4.dp else 0.dp
+    val borderColor = if (isSelected) Color.Blue else Color.Gray // Changed default to Gray
+    val borderWidth = if (showBorder) 2.dp else 0.dp // Always show border when showBorder is true
+    val selectionBorderWidth = if (isSelected) 4.dp else 0.dp // Additional border for selection
     val overlayColor = if (isSelected) Color.Blue.copy(alpha = 0.3f) else Color.Transparent
 
     Card(
         modifier = modifier
             .aspectRatio(1f)
-            .border(borderWidth, borderColor, RoundedCornerShape(8.dp)),
+            .border(borderWidth, borderColor, RoundedCornerShape(8.dp))
+            .border(selectionBorderWidth, Color.Blue, RoundedCornerShape(8.dp)), // Added second border for selection
         elevation = CardDefaults.cardElevation(if (isSelected) 8.dp else 2.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {

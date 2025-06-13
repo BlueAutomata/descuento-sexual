@@ -48,13 +48,13 @@ fun InstructionScreenContent(
                     ) {
                         Text(
                             text = "A continuación, se te presentarán varias fotografías.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
 
                         Text(
                             text = "\nDeberás seleccionar una imagen distinta para cada una de las siguientes condiciones:",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
 
@@ -69,7 +69,7 @@ fun InstructionScreenContent(
                         bulletPoints.forEach { point ->
                             Text(
                                 text = "• $point",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                                 modifier = Modifier
                                     .padding(start = 16.dp, bottom = 4.dp)
                                     .fillMaxWidth()
@@ -78,13 +78,13 @@ fun InstructionScreenContent(
 
                         Text(
                             text = "\nDespués de seleccionar una imagen para cada condición, verás una barra deslizante asociada a esa imagen.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
 
                         Text(
                             text = "\nEsta barra representa tu disposición a esperar para tener relaciones sexuales con esa persona sin protección:",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                             modifier = Modifier.padding(bottom = 4.dp)
                         )
 
@@ -99,7 +99,7 @@ fun InstructionScreenContent(
                         bulletPoints2.forEach { point ->
                             Text(
                                 text = "• $point",
-                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                                style = MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp),
                                 modifier = Modifier
                                     .padding(start = 16.dp, bottom = 4.dp)
                                     .fillMaxWidth()
@@ -108,7 +108,7 @@ fun InstructionScreenContent(
 
                         Text(
                             text = "\nNo hay respuestas correctas o incorrectas. Te invitamos a responder de forma honesta y reflexiva, basándote en lo que piensas y sientes actualmente.",
-                            style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp),
+                            style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.padding(top = 8.dp)
                         )
                     }

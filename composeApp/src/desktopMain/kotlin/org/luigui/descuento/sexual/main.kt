@@ -11,7 +11,7 @@ fun main() = application {
         title = "descuento-sexual",
         state = rememberWindowState().apply {
             placement = WindowPlacement.Maximized
-                                            //  //  WindowPlacement.Fullscreen
+                                            //  //   WindowPlacement.Fullscreen
         },
         undecorated = false // Optional: removes window decorations for true fullscreen
     ) {

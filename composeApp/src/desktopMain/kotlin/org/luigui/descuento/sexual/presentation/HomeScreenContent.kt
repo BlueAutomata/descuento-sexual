@@ -11,9 +11,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -26,6 +31,8 @@ fun HomeScreenContent(
     onNavigateToNextScreen: () -> Unit,
     onSelectFolder: () -> Unit
 ) {
+    var checked by remember { mutableStateOf(true) }
+
     MaterialTheme{
         Box(
             modifier = Modifier
@@ -50,6 +57,15 @@ fun HomeScreenContent(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
+                    Switch(
+                        modifier = Modifier.padding(16.dp),
+                        checked = checked,
+                        onCheckedChange = {
+                            checked = it
+                            viewModel.switchPhoto(checked)
+                        }
+                    )
+
                     // Text field to display the selected folder path
                     TextField(
                         value = viewModel.selectedFolderPath ?: "",

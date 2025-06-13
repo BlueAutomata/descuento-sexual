@@ -16,7 +16,7 @@ class HowAttractiveAreYouScreen(
         HowAttractiveAreYouScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(ChooseSexualOrientationScreen(viewModel))
+                navigator?.push(InstructionScreen(viewModel))
             }
         )
     }

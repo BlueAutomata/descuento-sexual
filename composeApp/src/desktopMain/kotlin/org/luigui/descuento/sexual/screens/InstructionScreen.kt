@@ -16,7 +16,7 @@ class InstructionScreen(
         InstructionScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(ChooseWaitTimeLikelihoodScreen(viewModel))
+                navigator?.push(ChooseSexualOrientationScreen(viewModel))
             }
         )
 
