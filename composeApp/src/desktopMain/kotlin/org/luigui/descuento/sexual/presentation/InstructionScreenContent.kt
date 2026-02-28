@@ -1,10 +1,8 @@
 package org.luigui.descuento.sexual.presentation
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -134,7 +132,7 @@ private fun TextBlock(text: String, fontSize: TextUnit, topPadding: Dp = 0.dp) {
         text = text,
         style = MaterialTheme.typography.bodyLarge.copy(
             fontSize = fontSize,
-            lineHeight = fontSize * 1.4f
+            lineHeight = fontSize * 1.8f
         ),
         modifier = Modifier.padding(top = topPadding, bottom = 10.dp),
         textAlign = TextAlign.Justify
@@ -147,7 +145,7 @@ private fun BulletPoint(text: String, fontSize: TextUnit) {
         text = "• $text",
         style = MaterialTheme.typography.bodyLarge.copy(
             fontSize = fontSize,
-            lineHeight = fontSize * 1.4f
+            lineHeight = fontSize * 1.8f
         ),
         modifier = Modifier
             .padding(start = 16.dp, bottom = 6.dp)

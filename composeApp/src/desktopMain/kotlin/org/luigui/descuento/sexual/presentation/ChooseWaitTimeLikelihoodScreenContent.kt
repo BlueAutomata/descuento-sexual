@@ -3,14 +3,19 @@ package org.luigui.descuento.sexual.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
@@ -28,12 +33,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import org.luigui.descuento.sexual.viewmodels.SexualDiscountViewModel
 import kotlin.math.roundToInt
 
@@ -55,169 +60,259 @@ fun ChooseWaitTimeLikelihoodScreenContent(
         5 to "Probablemente esperaría para usar condón",
         6 to "Definitivamente esperaría para tener relaciones sexuales con condón"
     )
-
     var sliderPosition by remember { mutableStateOf(0f) }
 
+    val scrollState = rememberScrollState()
+
     MaterialTheme {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            SexualDesirabilityText(selectedPhotoWaitTimePhase)
-            QuestionText(selectWaitingTimeProbabilityPhase)
+        BoxWithConstraints {
+            val screenWidth = maxWidth
+            val screenHeight = maxHeight
+            val isCompact = screenWidth < 600.dp
+            val isShortHeight = screenHeight < 900.dp
 
-            Spacer(
-                modifier = Modifier.weight(1f)
-            )
+            val bodyStyle = when {
+                screenWidth < 1280.dp -> MaterialTheme.typography.bodyLarge
+                screenWidth < 1600.dp -> MaterialTheme.typography.bodyLarge
+                else -> MaterialTheme.typography.bodyLarge
+            }
 
-            Box(
-                modifier = Modifier
-                    .height(400.dp)
-                    .clip(RoundedCornerShape(8.dp))
-            ) {
-                Image(
-                    painter = painterResource(viewModel.getPhasePhoto()),
-                    contentDescription = "Illustration",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
-                )
+            val headlineStyle = when {
+                screenWidth < 1280.dp -> MaterialTheme.typography.headlineMedium
+                screenWidth < 1600.dp -> MaterialTheme.typography.headlineMedium
+                else -> MaterialTheme.typography.headlineLarge
             }
 
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth(0.6f)
-                    .padding(horizontal = 32.dp)
+                    .fillMaxSize()
+                    .verticalScroll(scrollState)
+                    .padding(if (isCompact) 12.dp else 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(if (isCompact) 12.dp else 20.dp)
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Sin protección",
-                        textAlign = TextAlign.Start,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
-                    )
+                SexualDesirabilityText(selectedPhotoWaitTimePhase, headlineStyle)
+                QuestionText(selectWaitingTimeProbabilityPhase, headlineStyle)
 
-                    Slider(
-                        value = sliderPosition.coerceAtLeast(0f),
-                        onValueChange = { newPosition ->
-                            sliderPosition = newPosition
-                            if (newPosition >= 0) {
-                                rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
-                            }
-                        },
-                        valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
-                        steps = allowedValues.size - 2,
+                Spacer(modifier = Modifier.height(8.dp))
+
+                if (isShortHeight) {
+                    // Horizontal layout for short height screens
+                    Row(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(horizontal = 8.dp) // Small padding to prevent touching
-                    )
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(400.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                        ) {
+                            Image(
+                                painter = painterResource(viewModel.getPhasePhoto()),
+                                contentDescription = "Illustration",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
 
-                    Text(
-                        text = "Esperaría por protección",
-                        textAlign = TextAlign.End,
-                        style = MaterialTheme.typography.bodyLarge.copy(fontSize = 24.sp)
-                    )
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(top = 4.dp),
+                            horizontalAlignment = Alignment.Start
+                        ) {
+                            Text(
+                                text = if (sliderPosition < 0) "⚠️ Por favor, selecciona una opción" else "Seleccionado: $rating",
+                                style = headlineStyle.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (sliderPosition < 0) MaterialTheme.colorScheme.error
+                                    else MaterialTheme.colorScheme.primary
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp),
+                                textAlign = TextAlign.Center
+                            )
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text("Sin protección", style = bodyStyle)
+
+                                Slider(
+                                    value = sliderPosition.coerceAtLeast(0f),
+                                    onValueChange = { newPosition ->
+                                        sliderPosition = newPosition
+                                        if (newPosition >= 0) {
+                                            rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
+                                        }
+                                        else {
+                                            rating = 0
+                                        }
+                                    },
+                                    valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
+                                    steps = allowedValues.size - 2,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(horizontal = 8.dp)
+                                )
+
+                                Text("Esperaría por protección", style = bodyStyle)
+                            }
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            valueDescriptions.forEach { (value, description) ->
+                                Text(
+                                    text = description,
+                                    style = if (sliderPosition >= 0 && value == rating) {
+                                        bodyStyle.copy(fontWeight = FontWeight.Bold)
+                                    } else {
+                                        bodyStyle
+                                    },
+                                    modifier = Modifier.padding(vertical = 4.dp),
+                                    color = if (sliderPosition >= 0 && value == rating) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // Vertical layout for regular screens
+                    Box(
+                        modifier = Modifier
+                            .height(350.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    ) {
+                        Image(
+                            painter = painterResource(viewModel.getPhasePhoto()),
+                            contentDescription = "Illustration",
+                            contentScale = ContentScale.FillHeight,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth(if (isCompact) 0.9f else 0.6f)
+                            .padding(horizontal = if (isCompact) 16.dp else 32.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Sin protección",
+                                style = bodyStyle
+                            )
+
+                            Slider(
+                                value = sliderPosition.coerceAtLeast(0f),
+                                onValueChange = { newPosition ->
+                                    sliderPosition = newPosition
+                                    if (newPosition >= 0) {
+                                        rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
+                                    }
+                                    else {
+                                        rating = 0
+                                    }
+                                },
+                                valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
+                                steps = allowedValues.size - 2,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(horizontal = 8.dp)
+                            )
+
+                            Text(
+                                text = "Esperaría por protección",
+                                style = bodyStyle
+                            )
+                        }
+
+                        Text(
+                            text = if (sliderPosition < 0) "⚠️ Por favor, selecciona una opción" else "Seleccionado: $rating",
+                            style = headlineStyle.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = if (sliderPosition < 0) MaterialTheme.colorScheme.error
+                                else MaterialTheme.colorScheme.primary
+                            ),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        valueDescriptions.forEach { (value, description) ->
+                            Text(
+                                text = description,
+                                style = if (sliderPosition >= 0 && value == rating) {
+                                    bodyStyle.copy(fontWeight = FontWeight.Bold)
+                                } else {
+                                    bodyStyle
+                                },
+                                modifier = Modifier.padding(vertical = 4.dp),
+                                color = if (sliderPosition >= 0 && value == rating) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                                }
+                            )
+                        }
+                    }
                 }
-
-                // Selected value
-                Text(
-                    text = if (sliderPosition < 0) "⚠\uFE0F Por favor, selecciona una opción" else "Seleccionado: $rating",
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = if (sliderPosition < 0) MaterialTheme.colorScheme.error
-                        else MaterialTheme.colorScheme.primary
-                    ),
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Value descriptions
-                Column {
-                    valueDescriptions.forEach { (value, description) ->
-                        Text(
-                            text = description,
-                            style = if (sliderPosition >= 0 && value == rating) {
-                                MaterialTheme.typography.bodyLarge.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 20.sp
-                                )
-                            } else {
-                                MaterialTheme.typography.bodyLarge.copy(fontSize = 20.sp)
-                            },
-                            modifier = Modifier.padding(vertical = 4.dp),
-                            color = if (sliderPosition >= 0 && value == rating) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                            }
-                        )
-                    }
-                }
-            }
 
-            Spacer(modifier = Modifier.weight(1f))
+            }
 
             Button(
                 onClick = {
                     viewModel.setRating(rating)
                     viewModel.saveMeasurement()
 
-                    if (selectWaitingTimeProbabilityPhase == 7 &&
-                        selectedPhotoWaitTimePhase == 4) {
+                    if (selectWaitingTimeProbabilityPhase == 7 && selectedPhotoWaitTimePhase == 4) {
                         onNavigateToNextScreen()
-                    }
-                    else if (selectWaitingTimeProbabilityPhase == 7) {
+                    } else if (selectWaitingTimeProbabilityPhase == 7) {
                         viewModel.resetWaitingTimePhase()
                         viewModel.updatePhotoWaitTimePhase()
-                    }
-                    else {
+                    } else {
                         viewModel.updateWaitingTimePhase()
                     }
+
                     rating = 0
                     sliderPosition = allowedValues.indexOf(0).toFloat()
                 },
-                enabled = sliderPosition != 0f,
-                modifier = Modifier.align(Alignment.End)
+                enabled = rating != 0,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomEnd)
             ) {
-                Text(
-                    text = "Siguiente",
-                    style = MaterialTheme.typography.bodyLarge.copy(fontSize = 18.sp)
-                )
+                Text("Siguiente", style = bodyStyle)
             }
         }
     }
 }
 
+
+
 @Composable
-private fun SexualDesirabilityText(phase: Int) {
+private fun SexualDesirabilityText(phase: Int, textStyle: TextStyle) {
     val (prefix, highlightedText, suffix) = when (phase) {
-        1 -> Triple(
-            "La persona con la que ",
-            "más",
-            " desearía tener relaciones sexuales"
-        )
-        2 -> Triple(
-            "La persona con la que ",
-            "menos",
-            " desearía tener relaciones sexuales"
-        )
-        3 -> Triple(
-            "La persona que cree ",
-            "más probable",
-            " que tenga una infección de transmisión sexual"
-        )
-        4 -> Triple(
-            "La persona que cree ",
-            "menos probable",
-            " que tenga una infección de transmisión sexual"
-        )
+        1 -> Triple("La persona con la que ", "más", " desearía tener relaciones sexuales")
+        2 -> Triple("La persona con la que ", "menos", " desearía tener relaciones sexuales")
+        3 -> Triple("La persona que cree ", "más probable", " que tenga una infección de transmisión sexual")
+        4 -> Triple("La persona que cree ", "menos probable", " que tenga una infección de transmisión sexual")
         else -> return
     }
 
@@ -226,21 +321,18 @@ private fun SexualDesirabilityText(phase: Int) {
         text = buildAnnotatedString {
             append(prefix)
             withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Red
-                )
+                style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.Red)
             ) {
                 append(highlightedText)
             }
             append(suffix)
         },
-        style = MaterialTheme.typography.headlineLarge,
+        style = textStyle
     )
 }
 
 @Composable
-private fun QuestionText(phase: Int) {
+private fun QuestionText(phase: Int, textStyle: TextStyle) {
     val timeString = when (phase) {
         1 -> "1 hora"
         2 -> "3 horas"
@@ -257,15 +349,16 @@ private fun QuestionText(phase: Int) {
         text = buildAnnotatedString {
             append("¿Cuál es la probabilidad de que espere ")
             withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Red
-                )
+                style = SpanStyle(fontWeight = FontWeight.Bold, color = Color.Red)
             ) {
                 append(timeString)
             }
             append(" para tener sexo con protección?")
         },
-        style = MaterialTheme.typography.headlineLarge,
+        style = textStyle
     )
 }
+
+
+
+

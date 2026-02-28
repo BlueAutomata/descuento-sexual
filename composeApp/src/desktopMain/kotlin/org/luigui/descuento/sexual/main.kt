@@ -11,11 +11,13 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "descuento-sexual",
-        state = rememberWindowState(size = DpSize(1280.dp, 720.dp)).apply {
+        state = rememberWindowState(placement = WindowPlacement.Fullscreen).apply {
+            //WindowPlacement.Fullscreen
+            //placement = WindowPlacement.Fullscreen
             //placement = WindowPlacement.Maximized
-                                            //  //   WindowPlacement.Fullscreen
+                                            //  //   WindowPlacement.Fullscreen size = DpSize(1920.dp, 1080.dp)
         },
-        undecorated = false // Optional: removes window decorations for true fullscreen
+        undecorated = true // Optional: removes window decorations for true fullscreen
     ) {
         App()
     }

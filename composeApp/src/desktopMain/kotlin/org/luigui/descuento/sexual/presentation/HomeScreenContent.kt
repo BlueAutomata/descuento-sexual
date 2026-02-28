@@ -34,6 +34,8 @@ fun HomeScreenContent(
     var checked by remember { mutableStateOf(true) }
 
     MaterialTheme{
+        checked = false
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -61,8 +63,7 @@ fun HomeScreenContent(
                         modifier = Modifier.padding(16.dp),
                         checked = checked,
                         onCheckedChange = {
-                            checked = it
-                            viewModel.switchPhoto(checked)
+                            viewModel.switchPhoto(it)
                         }
                     )
 
