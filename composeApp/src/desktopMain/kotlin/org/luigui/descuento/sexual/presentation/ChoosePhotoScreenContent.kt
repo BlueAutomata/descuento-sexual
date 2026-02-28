@@ -185,7 +185,7 @@ fun RendererPhotos(
     val currentPhase by viewModel.selectPhotoPhase.collectAsState()
     val selectedPhoto by viewModel.selectedPhoto.collectAsState()
     val photos = remember(viewModel.sexualBehavior.value, currentPhase) {
-        if (viewModel.sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
+        if (viewModel.sexualBehavior.value == SexualBehavior.HAS_SEX_WITH_MEN) {
             (1..30).map { "man_$it" }.shuffled()
         } else {
             (1..30).map { "woman_$it" }.shuffled()

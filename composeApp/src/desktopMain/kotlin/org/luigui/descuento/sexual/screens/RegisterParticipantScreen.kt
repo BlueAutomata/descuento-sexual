@@ -16,7 +16,7 @@ class RegisterParticipantScreen(
         RegisterParticipantScreenContent(
             viewModel = viewModel,
             onNavigateToNextScreen = {
-                navigator?.push(HowAttractiveAreYouScreen(viewModel))
+                navigator?.push(InstructionScreen(viewModel))
             }
         )
     }
