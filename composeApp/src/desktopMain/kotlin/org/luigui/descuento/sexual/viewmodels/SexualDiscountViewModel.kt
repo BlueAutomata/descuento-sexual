@@ -158,8 +158,8 @@ class SexualDiscountViewModel: ViewModel() {
 
     fun setSexualBehavior(index: Int) {
         when (index) {
-            0 -> _sexualBehavior.value = SexualBehavior.HETEROSEXUAL
-            1 -> _sexualBehavior.value = SexualBehavior.WSW
+            0 -> _sexualBehavior.value = SexualBehavior.HAS_SEX_WITH_MEN
+            1 -> _sexualBehavior.value = SexualBehavior.HAS_SEX_WITH_WOMEN
             else -> _sexualBehavior.value = null
         }
         print(_sexualBehavior.value)
@@ -180,7 +180,7 @@ class SexualDiscountViewModel: ViewModel() {
     }
 
     fun getRandomPlaceholders() {
-        _photoPlaceholders.value = if (_sexualBehavior.value == SexualBehavior.HETEROSEXUAL) {
+        _photoPlaceholders.value = if (_sexualBehavior.value == SexualBehavior.HAS_SEX_WITH_MEN) {
             listOf(
                 "images/placeholder_man_1.png",
                 "images/placeholder_man_2.png",
@@ -443,8 +443,8 @@ class SexualDiscountViewModel: ViewModel() {
                 }
 
                 val sexualBehaviorSpanish = when (measurement.sexualBehavior) {
-                    "WSW" -> "msm"
-                    "HETEROSEXUAL" -> "heterosexual"
+                    "HAS_SEX_WITH_WOMEN" -> "Tiene sexo con mujeres"
+                    "HAS_SEX_WITH_MEN" -> "Tiene sexo con hombres"
                     "Protected" -> "protegido"
                     "Unprotected" -> "sin protección"
                     else -> measurement.sexualBehavior ?: "Desconocido"
@@ -466,13 +466,13 @@ class SexualDiscountViewModel: ViewModel() {
                     createCell(0).setCellValue(currentDate)
                     createCell(1).setCellValue(currentTime)
                     createCell(2).setCellValue(measurement.nameAndCode)
-                    createCell(3).setCellValue(measurement.selfAttractiveness?.toString() ?: "N/A")  // New cell
-                    createCell(4).setCellValue(sexualBehaviorSpanish)
-                    createCell(5).setCellValue(sexualDesirabilitySpanish)
-                    createCell(6).setCellValue(measurement.photoReference)
-                    createCell(7).setCellValue(waitTimeSpanish)
-                    createCell(8).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
-                    createCell(9).setCellValue(measurement.comment)
+                    //createCell(3).setCellValue(measurement.selfAttractiveness?.toString() ?: "N/A")  // New cell
+                    createCell(3).setCellValue(sexualBehaviorSpanish)
+                    createCell(4).setCellValue(sexualDesirabilitySpanish)
+                    createCell(5).setCellValue(measurement.photoReference)
+                    createCell(6).setCellValue(waitTimeSpanish)
+                    createCell(7).setCellValue(measurement.probabilityScore?.toString() ?: "N/A")
+                    createCell(8).setCellValue(measurement.comment)
                 }
 
                 // Write workbook
@@ -491,13 +491,13 @@ class SexualDiscountViewModel: ViewModel() {
             createCell(0).setCellValue("Fecha")
             createCell(1).setCellValue("Hora")
             createCell(2).setCellValue("Nombre y Código")
-            createCell(3).setCellValue("Atractivo Propio")  // New column
-            createCell(4).setCellValue("Comportamiento Sexual")
-            createCell(5).setCellValue("Categoría de Deseabilidad")
-            createCell(6).setCellValue("Referencia de Foto")
-            createCell(7).setCellValue("Tiempo de Espera")
-            createCell(8).setCellValue("Probabilidad")
-            createCell(9).setCellValue("Comentario")
+            //createCell(3).setCellValue("Atractivo Propio")  // New column
+            createCell(3).setCellValue("Comportamiento Sexual")
+            createCell(4).setCellValue("Categoría de Deseabilidad")
+            createCell(5).setCellValue("Referencia de Foto")
+            createCell(6).setCellValue("Tiempo de Espera")
+            createCell(7).setCellValue("Probabilidad")
+            createCell(8).setCellValue("Comentario")
         }
     }
 
