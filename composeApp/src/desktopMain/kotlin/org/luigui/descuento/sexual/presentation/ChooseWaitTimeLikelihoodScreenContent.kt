@@ -50,17 +50,17 @@ fun ChooseWaitTimeLikelihoodScreenContent(
     val selectedPhotoWaitTimePhase by viewModel.selectedPhotoWaitTimePhase.collectAsState()
     val selectWaitingTimeProbabilityPhase by viewModel.selectWaitingTimeProbabilityPhase.collectAsState()
 
-    var rating by remember { mutableStateOf(0) }
-    val allowedValues = listOf(0, 1, 2, 3, 4, 5, 6)
+    var rating by remember { mutableStateOf(-1) }
+    val allowedValues = listOf(-1, 0, 2, 4, 6, 8, 10)
     val valueDescriptions = mapOf(
-        1 to "Definitivamente tendría relaciones sexuales sin condón",
+        0 to "Definitivamente tendría relaciones sexuales sin condón",
         2 to "Muy probablemente tendría sexo sin condón",
-        3 to "Probablemente tendría sexo sin condón",
-        4 to "No estoy segura de si esperaría o no",
-        5 to "Probablemente esperaría para usar condón",
-        6 to "Definitivamente esperaría para tener relaciones sexuales con condón"
+        4 to "Probablemente tendría sexo sin condón",
+        6 to "No estoy segura de si esperaría o no",
+        8 to "Probablemente esperaría para usar condón",
+        10 to "Definitivamente esperaría para tener relaciones sexuales con condón"
     )
-    var sliderPosition by remember { mutableStateOf(0f) }
+    var sliderPosition by remember { mutableStateOf(-1f) }
 
     val scrollState = rememberScrollState()
 
@@ -148,11 +148,10 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                                     value = sliderPosition.coerceAtLeast(0f),
                                     onValueChange = { newPosition ->
                                         sliderPosition = newPosition
-                                        if (newPosition >= 0) {
-                                            rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
-                                        }
-                                        else {
-                                            rating = 0
+                                        rating = if (newPosition < 0f) {
+                                            -1
+                                        } else {
+                                            allowedValues[newPosition.roundToInt().coerceIn(1, allowedValues.size - 1)]
                                         }
                                     },
                                     valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
@@ -220,11 +219,10 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                                 value = sliderPosition.coerceAtLeast(0f),
                                 onValueChange = { newPosition ->
                                     sliderPosition = newPosition
-                                    if (newPosition >= 0) {
-                                        rating = allowedValues[newPosition.roundToInt().coerceIn(0, allowedValues.size - 1)]
-                                    }
-                                    else {
-                                        rating = 0
+                                    rating = if (newPosition < 0f) {
+                                        -1
+                                    } else {
+                                        allowedValues[newPosition.roundToInt().coerceIn(1, allowedValues.size - 1)]
                                     }
                                 },
                                 valueRange = -0.5f..(allowedValues.size - 1).toFloat(),
@@ -290,10 +288,10 @@ fun ChooseWaitTimeLikelihoodScreenContent(
                         viewModel.updateWaitingTimePhase()
                     }
 
-                    rating = 0
-                    sliderPosition = allowedValues.indexOf(0).toFloat()
+                    rating = -1
+                    sliderPosition = -1f  // ← was: allowedValues.indexOf(0).toFloat()
                 },
-                enabled = rating != 0,
+                enabled = rating != -1,
                 modifier = Modifier
                     .padding(16.dp)
                     .align(Alignment.BottomEnd)
