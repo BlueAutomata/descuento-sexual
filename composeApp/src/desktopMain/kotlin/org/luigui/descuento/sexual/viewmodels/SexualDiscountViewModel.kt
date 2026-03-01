@@ -75,7 +75,7 @@ class SexualDiscountViewModel: ViewModel() {
     private val _comment = MutableStateFlow("")
     val comment: StateFlow<String> = _comment
 
-    private val _photoType = MutableStateFlow("_fake")
+    private val _photoType = MutableStateFlow("_ai")
     val photoType: StateFlow<String> = _photoType
 
     fun showFolderExistsMessage() {
@@ -152,7 +152,7 @@ class SexualDiscountViewModel: ViewModel() {
             _photoType.value = ""
         }
         else {
-            _photoType.value = "_fake"
+            _photoType.value = "_ai"
         }
     }
 
