@@ -56,7 +56,7 @@ fun ChooseWaitTimeLikelihoodScreenContent(
         0 to "Definitivamente tendría relaciones sexuales sin condón",
         2 to "Muy probablemente tendría sexo sin condón",
         4 to "Probablemente tendría sexo sin condón",
-        6 to "No estoy segura de si esperaría o no",
+        6 to "No estoy segurx de si esperaría o no",
         8 to "Probablemente esperaría para usar condón",
         10 to "Definitivamente esperaría para tener relaciones sexuales con condón"
     )
